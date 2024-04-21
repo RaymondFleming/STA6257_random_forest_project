@@ -17,8 +17,7 @@ editor:
     wrap: 72
 ---
 
-[Quarto
-Slides](https://raymondfleming.github.io/RandomForestPresentation/#/title-slide)
+[Quarto Slides](slides.html)
 
 # Introduction
 
@@ -629,7 +628,7 @@ Possibly Extinct (CR PE) taxa, to total 944 species.
 The table below organizes and summarizes the explanatory variables.
 
 | **Type of Variable** | **Variable Name**   | **Description**                                                                                                                                                                                                                                                         | **Range of Values** |
-|-------------|-------------|---------------------------------|-------------|
+|---------------|---------------|-----------------------------|---------------|
 | **Binary**           | Habitat loss        | Conversion, fragmentation, and/or elimination of habitat. e.g., logging, wood harvesting, livestock farming, urban development.                                                                                                                                         | (0, 1)              |
 |                      | Habitat degradation | Alteration of natural habitats necessary for species survival resulting in reduced functionality e.g., fire suppression, droughts.                                                                                                                                      | (0, 1)              |
 |                      | Invasive species    | Impacts of alien species on natives through different mechanisms e.g. alteration of soil chemistry, resource competition.                                                                                                                                               | (0, 1)              |
@@ -856,7 +855,7 @@ original_data <- read_csv("All_threat_data.csv")
 kable(head(original_data, 10))
 ```
 
-### Encoding Dataset Prview
+### Encoding Dataset Preview
 
 ```{r, warning=FALSE, echo=TRUE}
 EncDF <- read.csv("All_threat_data.csv")

@@ -3183,7 +3183,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 
 </header>
 
-<p><a href="https://raymondfleming.github.io/RandomForestPresentation/#/title-slide">Quarto Slides</a></p>
+<p><a href="slides.html">Quarto Slides</a></p>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
 <p>Random Forest is a common ensemble method used to make predictions from a variety of dataset types. This is done by combining a number of diverse, but simpler decision tree models into an ensemble model which can be more accurate, but also more versatile. In creating a random forest, each of the decision trees is created with a randomized subset of data, and a random subset of features, with the output of each tree combined into the output of the random forest. The benefits to building the model this way include the ability to handle missing data natively, dimensionality reduction or reducing the need to perform dimensionality reduction prior to modeling, and the structure of the forest can be used to estimate variable importance, which can then be utilized in training other models or feature engineering. Given these benefits, and the ability to use complex datasets natively, Random Forests have gained popularity over time and are commonly used.</p>
@@ -3205,7 +3205,7 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 <p>Application of random forest algorithm on feature subset selection and classification and regression. The goal of <span class="citation" data-cites="jaiswal2017application">(<a href="#ref-jaiswal2017application" role="doc-biblioref">Jaiswal and Samikannu 2017</a>)</span> is to use a random forest to select a subset of high value features to be analyzed, reducing dimensionality, computational overhead, reducing the probability of overfit, and possibly benefiting the modeler’s ability to visualize and understand the dataset by removing unnecessary features. The method used is to generate large, unpruned trees then use out of bag estimation and the importance of each variable is calculated based on the number of correct votes - the permuted out of bag variables. This can be an iterative process for large datasets. Gini values are used to identify variable interactions across trees in the forest. The results of this paper are not clear, but it does appear that there was a reduction in dimensionality using this method. The limitations may be if there could be an engineered feature, these would be best created prior to using the random forest feature selection.</p>
 <p>A guided random forest based feature selection approach for activity recognition.” The purpose of <span class="citation" data-cites="uddin2015guided">(<a href="#ref-uddin2015guided" role="doc-biblioref">Uddin and Uddiny 2015</a>)</span> is to use a random forest to during feature selection for a human activity recognition problem.This is performed by training a standard random forest then using the feature importance scores generated to select the most important features to use in a second random forest used for prediction.In general, feature selection of this type can improve accuracy and reduce computational complexity. The results were that the guided random forest has a comparable accuracy to the more common methods such as Relief-F and Lasso Logistic Regression, but has a lower computational complexity than Relief-F making it a possible choice for a solution requiring a tradeoff between complexity and accuracy.</p>
 <p>A permutation importance-based feature selection method for short-term electricity load forecasting using random forest. The goal of <span class="citation" data-cites="huang2016permutation">(<a href="#ref-huang2016permutation" role="doc-biblioref">Huang, Lu, and Xu 2016</a>)</span> is to demonstrate a new feature selection method to be used with a random forest based on permutation importance values of a trained random forest to be used in selecting the best features to train a second random forest model to predict load forecasts for a power grid. This feature set is then used as a reduced feature set to train the short term load forecasting model, which improves the computation time necessary and may improve accuracy as well. This feature selection method provided worked best for a random forest model, but also provided better results for an artificial neural network and support vector regression indicating it may generalize well.</p>
-<p>Overview of random forest methodology and practical guidance with emphasis on computational biology and bioinformatics. <span class="citation" data-cites="Boulesteix2016random">(<a href="#ref-Boulesteix2016random" role="doc-biblioref">Boulesteix 2012</a>)</span> Random forest (RF) methodology is found to be used to address two main classes of problems which is to construct a prediction rule in a supervised learning problem and to assess and rank variables with respect to their ability to predict the response. RF is a classification and regression method based on the aggregation of a large number of decision trees. RF has become a popular analysis tool in many application fields including bioinformatics and will most probably remain relevant in the future due to its high flexibility. However, RF approaches still have to face a number of challenges. They can produce unexpected results in some specific cases such as a bias depending on the distribution of the predictor.</p>
+<p>Overview of random forest methodology and practical guidance with emphasis on computational biology and bioinformatics. <span class="citation" data-cites="Boulesteix2016random">(<a href="#ref-Boulesteix2016random" role="doc-biblioref">Boulesteix 2016</a>)</span> Random forest (RF) methodology is found to be used to address two main classes of problems which is to construct a prediction rule in a supervised learning problem and to assess and rank variables with respect to their ability to predict the response. RF is a classification and regression method based on the aggregation of a large number of decision trees. RF has become a popular analysis tool in many application fields including bioinformatics and will most probably remain relevant in the future due to its high flexibility. However, RF approaches still have to face a number of challenges. They can produce unexpected results in some specific cases such as a bias depending on the distribution of the predictor.</p>
 <p>Comparison of Random Forest and SVM for Raw Data in Drug Discovery: Prediction of Radiation Protection and Toxicity Case Study. <span class="citation" data-cites="Matsumoto2016comprison">(<a href="#ref-Matsumoto2016comprison" role="doc-biblioref">Matsumoto and Ohwada 2016</a>)</span> Random forest and SVM was compared for the raw data in drug discovery. There were two types of problems based on the target protein. They predicted the radiation protection(cancer) function and toxicity for radioprotectors targeting p53 as a case study.Two experiments were performed for each compound.There were 84 total. First, experiments administering the compounds to normal cells were performed. These experiments were able to measure the toxicity. Then, experiments administering the compounds to gamma irradiated cells were performed. These experiments were able to measure the radiation-protection function. The experiment measured the cell death rate for each concentration case. After using random forest and machine learning, SVM was found to be better than random forest as determined by the AUC score. In contrast, for predicting toxicity, random forest is better than SVM.</p>
 <p>Research on machine learning framework based on random forest algorithm. <span class="citation" data-cites="Ren2017research">(<a href="#ref-Ren2017research" role="doc-biblioref">Ren and Han 2017</a>)</span> This article is about research on a machine learning framework based on a random forest algorithm.There is an introduction to the filtering method. Filtration method gives the characteristics of the data with a weight to then carry out feature ranking according to the said weight. Then some rules are applied to set a threshold and the feature whose weight is greater than the threshold value is retained or deleted. The steps are as follows for algorithm optimization which is to carry out feature selection and remove noise characteristics, carry out feature selection and delete redundant features, and voting strategies for optimizing the random forest algorithm.</p>
 <p>Random Forest. <span class="citation" data-cites="Rigatti2017forest">(<a href="#ref-Rigatti2017forest" role="doc-biblioref">Rigatti 2017</a>)</span> Colon cancer data from the SEER database was used to construct both a Cox model and a random forest model to determine how well the models perform on the same data. The data set is sampled with bootstrap sampling. The article explains what random forest is and gives many examples.In the sample problem they evaluated , the Cox and random forest models performed similarly, so because the Cox model was easier to interpret , it made it the preferred method.It only had a few predictors and no obvious interactions or nonlinear effects, so the random forest model would not be the best option in this case.However, the both achieved well, because the error rate of the models was approximately 18%.</p>
@@ -3255,16 +3255,16 @@ return!"\t\n\x0B\f\r                　\u2028\u2029
 </div>
 <p>Decision trees in a random forest work together to create a robust and accurate model by leveraging their diversity and combining the output of multiple decision trees to make predictions.</p>
 <p>When evaluating the quality of the splits in decision trees, several metrics are considered.</p>
-<p><strong>1. Gini impurity: </strong></p>
+<p><strong>1. Gini impurity:</strong></p>
 <p>The Gini coefficient is a measure of inequality between 0 and 1, where a value closer to 1 indicates more inequality. This is used to calculate inequality in income and wealth, but it can be used in other problems where a measure of inequality is needed. <span class="math display">\[
 G = \frac{\sum_{i=1}^{n}\sum_{j=1}^{n}|x_i - x_j|}{2n^2\bar{x}}
 \]</span></p>
-<p><strong>2. Information gain: </strong></p>
+<p><strong>2. Information gain:</strong></p>
 <p>This measure can be used in multiclass problems and is often used for finding where to split the features. The other commonly used option is Entropy, which is also an entropy measure but with a more complex calculation.</p>
 <p>The tradeoff is a faster calculation using the Gini impurity, with a possibly higher accuracy. <span class="math display">\[H=\sum\limits_{i=1}^{n}-p_i log_2 p_i\]</span> where <span class="math inline">\(p_i\)</span> is the percentage of each class present in the node resulting from a tree split.</p>
-<p><strong>3. Entropy: </strong></p>
+<p><strong>3. Entropy:</strong></p>
 <p>For decision trees, a related measure is used to measure the entropy of a result by calculating the probability that a random entry will be in the wrong class if it were randomly assigned a label. <span class="math display">\[I_G=1-\sum\limits_{i=1}^{J}p_i^2\]</span> where <span class="math inline">\(p_i\)</span> is the probability that a randomly labeled element would be incorrectly classified.</p>
-<p><strong>4. Out of bag error estimation: </strong></p>
+<p><strong>4. Out of bag error estimation:</strong></p>
 <ul>
 <li>Each decision tree is trained on a bootstrapped sample of the original dataset.</li>
 <li>The data points that are not included in the bootstrapped sample for a particular tree are called out-of-bag instances.</li>
@@ -3417,10 +3417,10 @@ Place these five prediction results into a set <span class="math inline">\(Y = \
 <p>The table below organizes and summarizes the explanatory variables.</p>
 <table class="table">
 <colgroup>
-<col style="width: 11%">
-<col style="width: 11%">
-<col style="width: 65%">
-<col style="width: 10%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 39%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -3878,8 +3878,8 @@ Place these five prediction results into a set <span class="math inline">\(Y = \
 </div>
 </div>
 </section>
-<section id="encoding-dataset-prview" class="level3">
-<h3 class="anchored" data-anchor-id="encoding-dataset-prview">Encoding Dataset Prview</h3>
+<section id="encoding-dataset-preview" class="level3">
+<h3 class="anchored" data-anchor-id="encoding-dataset-preview">Encoding Dataset Preview</h3>
 <div class="cell">
 <details>
 <summary>Code</summary>
@@ -4739,7 +4739,7 @@ Biau, Gérard. 2012. <span>“Analysis of a Random Forests Model.”</span> <em>
 Biau, Gérard, and Erwan Scornet. 2016. <span>“A Random Forest Guided Tour.”</span> <em>Test</em> 25: 197–227.
 </div>
 <div id="ref-Boulesteix2016random" class="csl-entry" role="listitem">
-Boulesteix, Kruppa, Janitza. 2012. <span>“Overview of Random Forest Methodology and Practical Guidance with Emphasis on Computational Biology and Bioinformatics.”</span> <em>Test</em> 2: 493–507. <a href="https://wires.onlinelibrary.wiley.com/doi/full/10.1002/widm.1072?casa_token=hC16i-KAsGsAAAAA%3Apm3JlfgmWFRQjdRs6ajof4oCVf_VLiV1SVzLNofXVOI4y_-gaEN14K4tWOreZ7vb_R6FE7r2EIBjsCo">https://wires.onlinelibrary.wiley.com/doi/full/10.1002/widm.1072?casa_token=hC16i-KAsGsAAAAA%3Apm3JlfgmWFRQjdRs6ajof4oCVf_VLiV1SVzLNofXVOI4y_-gaEN14K4tWOreZ7vb_R6FE7r2EIBjsCo</a>.
+Boulesteix, Kruppa, Janitza. 2016. <span>“Overview of Random Forest Methodology and Practical Guidance with Emphasis on Computational Biology and Bioinformatics.”</span> <em>Test</em> 2: 493–507. <a href="https://wires.onlinelibrary.wiley.com/doi/full/10.1002/widm.1072?casa_token=hC16i-KAsGsAAAAA%3Apm3JlfgmWFRQjdRs6ajof4oCVf_VLiV1SVzLNofXVOI4y_-gaEN14K4tWOreZ7vb_R6FE7r2EIBjsCo">https://wires.onlinelibrary.wiley.com/doi/full/10.1002/widm.1072?casa_token=hC16i-KAsGsAAAAA%3Apm3JlfgmWFRQjdRs6ajof4oCVf_VLiV1SVzLNofXVOI4y_-gaEN14K4tWOreZ7vb_R6FE7r2EIBjsCo</a>.
 </div>
 <div id="ref-huang2016permutation" class="csl-entry" role="listitem">
 Huang, Nantian, Guobo Lu, and Dianguo Xu. 2016. <span>“A Permutation Importance-Based Feature Selection Method for Short-Term Electricity Load Forecasting Using Random Forest.”</span> <em>Energies</em> 9 (10): 767.
