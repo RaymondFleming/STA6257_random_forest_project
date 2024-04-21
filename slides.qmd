@@ -18,18 +18,12 @@ output: revealjs::revealjs_presentation
     -   Able to function with incomplete data
     -   Lower likelihood of an overfit
     -   Improved prediction accuracy
-
 :::
 
 ::: {.column width="50%"}
-![](forest.png){width="78%"}
-[@Anthony_2012]
+![](forest.png){width="78%"} [@Anthony_2012]
 :::
 :::
-
-
-    
-
 
 ## Random Forest Applications {.smaller}
 
@@ -59,16 +53,13 @@ output: revealjs::revealjs_presentation
 
 ## Literature Review {.smaller}
 
--   Feature Selection can be performed by training a large, unpruned random forest then feature importance can be used to help with identifying the most important features [@jaiswal2017application], leading to a reduction in computational requirements
-\
-\
--   Biau and Scornet [@biau2016random] present an extensive exploration of Random Forests, covering aspects of theoretical foundations, model evaluation, and empirical performance. They discuss how tree construction, feature selection, and ensemble learning aid in predictive analysis.
-\
-\
+-   Feature Selection can be performed by training a large, unpruned random forest then feature importance can be used to help with identifying the most important features [@jaiswal2017application], leading to a reduction in computational requirements\
+    \
+-   Biau and Scornet [@biau2016random] present an extensive exploration of Random Forests, covering aspects of theoretical foundations, model evaluation, and empirical performance. They discuss how tree construction, feature selection, and ensemble learning aid in predictive analysis.\
+    \
 -   Filtration method is a feature selection technique that ranks characteristics of data according to weight. The features whose weights are greater than the threshold are retained to help improve accuracy of classification [@Ren2017research]
 
 # Methods {.smaller}
-
 
 ## Random Forest Improvements {.smaller}
 
@@ -78,14 +69,12 @@ output: revealjs::revealjs_presentation
         -   Rows with missing data will often be left out of the sample, improving performance
         -   Performed with replacement
 
-
 ## Random Forest Improvements Continued {.smaller}
 
 -   Boosting
     -   When individual models are trained in a sequential way, each model then learns the mistakes made by the preceding model.A random set of features is selected for each node in training
     -   Information about feature importance may be saved and applies in future iterations
     -   Even with automated random feature selection, feature selection and engineering prior to training may improve performance
-
 
 ## Decision Tree {.smaller}
 
@@ -121,9 +110,8 @@ species_test <- subset(dataP2, split2 == "FALSE")
 -   Single decision trees may be visualized to help modelers understand the dataset
     -   Important features for a single decision tree will likely be important for a full model
 -   The tree can be explained by two entities: internal nodes and leaves.
-     -  Each internal node represents a test on a feature.
-     -  Each leaf node represents a class label.
-
+    -   Each internal node represents a test on a feature.
+    -   Each leaf node represents a class label.
 :::
 
 ::: {.column width="50%"}
@@ -170,9 +158,8 @@ rpart.plot(m3)
     -   Resampling method similar to out of bag estimation
     -   Allows estimation of the general performance of a model
 -   Gini Index
-    - $I_G=1-\sum\limits_{i=1}^{j}p_i^2$
-    - Calculates the probability that a random entry will be in the wrong class if classified randomly where $p_i$ is the probability of class $i$
-    
+    -   $I_G=1-\sum\limits_{i=1}^{j}p_i^2$
+    -   Calculates the probability that a random entry will be in the wrong class if classified randomly where $p_i$ is the probability of class $i$
 
 # Data {.smaller}
 
@@ -185,17 +172,12 @@ rpart.plot(m3)
 -   Purpose
 
     -   Predict whether or not an unknown plant is extinct based on the above characteristics
-
 :::
 
 ::: {.column width="50%"}
 ![](plantdiversity.png){width="100%"}
 :::
 :::
-
-
-
-
 
 ## Distribution of Range by Conservation Status {.smaller}
 
@@ -319,9 +301,7 @@ ggcorrplot::ggcorrplot(DescTools::PairApply(corrDF,DescTools::CramerV), type='lo
 ## Data Preparation {.smaller}
 
 ::: panel-tabset
-
 ### Preprocessing {.smaller}
-
 
 ```{r}
 #| echo: FALSE
@@ -338,10 +318,9 @@ data <- read.csv("process.csv")
 
 ::: columns
 ::: {.column width="50%"}
-
- -   Encode categorical features into numerical / factor features
- -   Split the training set into a training and test set
- -   Minimize class imbalance
+-   Encode categorical features into numerical / factor features
+-   Split the training set into a training and test set
+-   Minimize class imbalance
 
 ```{r}
 #| echo: FALSE
@@ -432,7 +411,6 @@ print(printFactors,quote=FALSE)
 
 ::: columns
 ::: {.column width="50%"}
-
 ```{r}
 #| echo: FALSE
 #| code-fold: FALSE
@@ -444,7 +422,6 @@ kable(head(original_data[0:4], 5))
 ```
 :::
 
-
 ::: {.column width="50%"}
 ```{r}
 #| echo: FALSE
@@ -454,10 +431,8 @@ kable(head(original_data[0:4], 5))
 encode_data <- read_csv("process.csv")
 kable(head(encode_data[0:4], 5))
 ```
-
 :::
 :::
-
 :::
 
 ## Class Balancing {.smaller}
@@ -1032,7 +1007,6 @@ print(printTable)
 -   Iterate over entire test set, storing results
 -   Generate a confusion matrix, calculate the sensitivity, and precision for each category
 
-
 ## Feature Importance {.smaller}
 
 ::: columns
@@ -1059,8 +1033,9 @@ bagged_cv <- train(
  
 plot(varImp(bagged_cv), 10) 
 ```
+
 -   Range is the most important feature to predict Group Status followed by Habitat Loss and Growth Form
-    -   Life Form, Other, and Unknown are unimportant for prediction 
+    -   Life Form, Other, and Unknown are unimportant for prediction
 :::
 
 ::: {.column width="50%"}
@@ -1407,7 +1382,6 @@ print(t(round(cmBC,2)),quote=FALSE)
 
 ## Conclusion {.smaller}
 
-
 ::: columns
 ::: {.column width="50%"}
 -   Predictive Model with 92% Accuracy.
@@ -1419,8 +1393,7 @@ print(t(round(cmBC,2)),quote=FALSE)
 :::
 
 ::: {.column width="50%"}
-![](SouthAfricaMap.PNG){width="100%"}
-[@mokotjomela2023diversity]
+![](SouthAfricaMap.PNG){width="100%"} [@mokotjomela2023diversity]
 :::
 :::
 
