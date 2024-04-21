@@ -3272,7 +3272,7 @@ G = \frac{\sum_{i=1}^{n}\sum_{j=1}^{n}|x_i - x_j|}{2n^2\bar{x}}
 <li>It is useful for assessing model performance and tuning hyperparameters.</li>
 </ul>
 <p><span class="math display">\[\text{OOB Error} = \frac{1}{N} \sum_{i=1}^{N} I(y_i \neq \hat{y}_{i, \text{OOB}})
-\]</span> where <span class="math inline">\(N\)</span> is the number of rows in the dataset</p>
+\]</span> where <span class="math inline">\(N\)</span> is the number of rows in the dataset and <span class="math inline">\(I\)</span> is an indicator function which returns 1 if <span class="math inline">\(y_i \ne \hat{y}_{i,OOB}\)</span></p>
 </section>
 <section id="random-forest-involves-the-following-basic-concepts" class="level3">
 <h3 class="anchored" data-anchor-id="random-forest-involves-the-following-basic-concepts">Random Forest involves the following basic concepts:</h3>
@@ -3883,27 +3883,29 @@ Place these five prediction results into a set <span class="math inline">\(Y = \
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;All_threat_data.csv&quot;</span>)</span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co">#data &lt;- read.csv(&quot;All_threat_data.csv&quot;)</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(GenSpec,LF,GF,Fam,Biomes,Status,Range,Habitat_degradation,Habitat_loss,IAS,Other,Over_exploitation,Pollution,Unknown,Group)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> EncDF <span class="sc">%&gt;%</span> </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;GenSpec&quot;</span>,<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;LF&quot;</span>,<span class="st">&quot;GF&quot;</span>,<span class="st">&quot;Fam&quot;</span>,<span class="st">&quot;Biomes&quot;</span>,<span class="st">&quot;Status&quot;</span>,<span class="st">&quot;Range&quot;</span>,<span class="st">&quot;Habitat_degradation&quot;</span>,<span class="st">&quot;Habitat_loss&quot;</span>, <span class="st">&quot;IAS&quot;</span>,<span class="st">&quot;Other&quot;</span>,<span class="st">&quot;Over_exploitation&quot;</span>,<span class="st">&quot;Pollution&quot;</span>,<span class="st">&quot;Unknown&quot;</span>),as_factor))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> EncDF <span class="sc">%&gt;%</span> </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate_at</span>(<span class="fu">c</span>(<span class="st">&quot;GenSpec&quot;</span>,<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;LF&quot;</span>,<span class="st">&quot;GF&quot;</span>,<span class="st">&quot;Fam&quot;</span>,<span class="st">&quot;Biomes&quot;</span>,<span class="st">&quot;Status&quot;</span>,<span class="st">&quot;Range&quot;</span>,<span class="st">&quot;Habitat_degradation&quot;</span>,<span class="st">&quot;Habitat_loss&quot;</span>, <span class="st">&quot;IAS&quot;</span>,<span class="st">&quot;Other&quot;</span>,<span class="st">&quot;Over_exploitation&quot;</span>,<span class="st">&quot;Pollution&quot;</span>,<span class="st">&quot;Unknown&quot;</span>),as.numeric)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="co">#EncDF &lt;- data %&gt;% select(GenSpec,LF,GF,Fam,Biomes,Status,Range,Habitat_degradation,Habitat_loss,IAS,Other,Over_exploitation,Pollution,Unknown,Group)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co">#EncDF &lt;- EncDF %&gt;% </span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="co">#            mutate(across(c(</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="co">#              &quot;GenSpec&quot;,&quot;Group&quot;,&quot;LF&quot;,&quot;GF&quot;,&quot;Fam&quot;,&quot;Biomes&quot;,&quot;Status&quot;,&quot;Range&quot;,&quot;Habitat_degradation&quot;,&quot;Habitat_loss&quot;, &quot;IAS&quot;,&quot;Other&quot;,&quot;Over_exploitation&quot;,&quot;Pollution&quot;,&quot;Unknown&quot;),as_factor))</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co">#EncDF &lt;- EncDF %&gt;% </span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="co">#            mutate_at(c(&quot;GenSpec&quot;,&quot;Group&quot;,&quot;LF&quot;,&quot;GF&quot;,&quot;Fam&quot;,&quot;Biomes&quot;,&quot;Status&quot;,&quot;Range&quot;,&quot;Habitat_degradation&quot;,&quot;Habitat_loss&quot;, &quot;IAS&quot;,&quot;Other&quot;,&quot;Over_exploitation&quot;,&quot;Pollution&quot;,&quot;Unknown&quot;),as.numeric)</span></span>
 <span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(EncDF, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#kable(head(EncDF, 10))</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>encode_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;process.csv&quot;</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(encode_data, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
 <colgroup>
-<col style="width: 6%">
+<col style="width: 7%">
 <col style="width: 2%">
 <col style="width: 2%">
 <col style="width: 3%">
 <col style="width: 5%">
 <col style="width: 5%">
-<col style="width: 4%">
+<col style="width: 5%">
 <col style="width: 16%">
 <col style="width: 10%">
 <col style="width: 3%">
@@ -3934,173 +3936,173 @@ Place these five prediction results into a set <span class="math inline">\(Y = \
 </thead>
 <tbody>
 <tr class="odd">
+<td style="text-align: right;">1020.400</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">54</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">188</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">282</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">497</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
+<td style="text-align: right;">1023.100</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">6899</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1028.900</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">46341</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1029.100</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">2</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">764</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">465969</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
+<td style="text-align: right;">1031.125</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">5</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">5</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">3</td>
-<td style="text-align: right;">28</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">50</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">2</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">1031.130</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">757</td>
+<td style="text-align: right;">414160</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">1031.300</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">383</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">15526</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">1036.110</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">348</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">11948</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">2</td>
+<td style="text-align: right;">1036.180</td>
+<td style="text-align: right;">1</td>
 <td style="text-align: right;">4</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">3</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">470</td>
+<td style="text-align: right;">35478</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">1043.190</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">6</td>
 <td style="text-align: right;">2</td>
 <td style="text-align: right;">1</td>
 <td style="text-align: right;">1</td>
-<td style="text-align: right;">748</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
+<td style="text-align: right;">393214</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: right;">1</td>
 </tr>
 </tbody>
@@ -4123,237 +4125,25 @@ Place these five prediction results into a set <span class="math inline">\(Y = \
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>features <span class="ot">&lt;-</span> EncDF[, <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>]</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>label <span class="ot">&lt;-</span> EncDF[, <span class="dv">15</span>]</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;process.csv&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>features <span class="ot">&lt;-</span> data[, <span class="dv">1</span><span class="sc">:</span><span class="dv">14</span>]</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>label <span class="ot">&lt;-</span> data[, <span class="dv">15</span>]</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">sample.split</span>(label, <span class="at">SplitRatio =</span> <span class="fl">0.7</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>features_train <span class="ot">=</span> features[split,]</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>features_test <span class="ot">=</span> features[<span class="sc">!</span>split,]</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>label_train <span class="ot">=</span> label[split]</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>label_test <span class="ot">=</span> label[<span class="sc">!</span>split]</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> features_train</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>data_train<span class="sc">$</span>label <span class="ot">&lt;-</span> label_train</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>class_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(data_train<span class="sc">$</span>label)</span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>split <span class="ot">&lt;-</span> <span class="fu">sample.split</span>(label, <span class="at">SplitRatio =</span> <span class="fl">0.7</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>features_train <span class="ot">=</span> features[split,]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>features_test <span class="ot">=</span> features[<span class="sc">!</span>split,]</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>label_train <span class="ot">=</span> label[split]</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>label_test <span class="ot">=</span> label[<span class="sc">!</span>split]</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>data_train <span class="ot">&lt;-</span> features_train</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>data_train<span class="sc">$</span>label <span class="ot">&lt;-</span> label_train</span>
 <span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>class_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(data_train<span class="sc">$</span>label)</span>
 <span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(EncDF, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>class_counts <span class="ot">&lt;-</span> <span class="fu">table</span>(data_train<span class="sc">$</span>label)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<table class="table table-sm table-striped small">
-<colgroup>
-<col style="width: 6%">
-<col style="width: 2%">
-<col style="width: 2%">
-<col style="width: 3%">
-<col style="width: 5%">
-<col style="width: 5%">
-<col style="width: 4%">
-<col style="width: 16%">
-<col style="width: 10%">
-<col style="width: 3%">
-<col style="width: 4%">
-<col style="width: 14%">
-<col style="width: 8%">
-<col style="width: 6%">
-<col style="width: 4%">
-</colgroup>
-<thead>
-<tr class="header">
-<th style="text-align: right;">GenSpec</th>
-<th style="text-align: right;">LF</th>
-<th style="text-align: right;">GF</th>
-<th style="text-align: right;">Fam</th>
-<th style="text-align: right;">Biomes</th>
-<th style="text-align: right;">Status</th>
-<th style="text-align: right;">Range</th>
-<th style="text-align: right;">Habitat_degradation</th>
-<th style="text-align: right;">Habitat_loss</th>
-<th style="text-align: right;">IAS</th>
-<th style="text-align: right;">Other</th>
-<th style="text-align: right;">Over_exploitation</th>
-<th style="text-align: right;">Pollution</th>
-<th style="text-align: right;">Unknown</th>
-<th style="text-align: right;">Group</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">54</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">282</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">497</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">764</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">5</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">28</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">757</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">7</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">383</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">8</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">348</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="odd">
-<td style="text-align: right;">9</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">4</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">3</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">470</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">10</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">6</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">748</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">2</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-<td style="text-align: right;">1</td>
-</tr>
-</tbody>
-</table>
-</div>
 </div>
 <section id="class-balancing" class="level4">
 <h4 class="anchored" data-anchor-id="class-balancing">Class Balancing</h4>
@@ -4401,7 +4191,6 @@ Group Counts Post-Balancing:  490 490 490</code></pre>
 <li>Divide the features and label, and apply different normalization to the training and testing sets</li>
 <li>Apply Min-Max normalization to features_train and features_test</li>
 <li>Apply Z-Score normalization to each column of features_train</li>
-<li>features_test &lt;- as.data.frame(mapply(function(x, y) {(x - mean(y))/sd(y)}, features_test, features_train, SIMPLIFY = FALSE))</li>
 <li>Apply Max Absolute Value normalization to the training set</li>
 <li>Apply L1 norm normalization to the training set</li>
 <li>Apply L2 norm normalization to the training set</li>
@@ -4521,8 +4310,8 @@ Group Counts Post-Balancing:  490 490 490</code></pre>
 </details>
 </div>
 </section>
-<section id="minmax-model" class="level4">
-<h4 class="anchored" data-anchor-id="minmax-model">MinMax Model</h4>
+<section id="training-steps-for-each-model" class="level4">
+<h4 class="anchored" data-anchor-id="training-steps-for-each-model">Training Steps for Each Model</h4>
 <ol type="1">
 <li>Calculate and print the accuracy of the test set</li>
 <li>Convert to a categorical variable</li>
@@ -4531,221 +4320,212 @@ Group Counts Post-Balancing:  490 490 490</code></pre>
 <li>Calculate the average precision rate (Positive Predictive Value)</li>
 <li>Print results</li>
 </ol>
+</section>
+<section id="minmax-model" class="level4">
+<h4 class="anchored" data-anchor-id="minmax-model">MinMax Model</h4>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MM <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)],</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>importanceMM <span class="ot">=</span> <span class="fu">importance</span>(MM)</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>PredMM <span class="ot">&lt;-</span> <span class="fu">predict</span>(MM, testMM)</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredMM) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>testfactorMM <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>PredFactorMM <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredMM)</span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorMM, testfactorMM)</span>
-<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cm<span class="sc">$</span>byClass)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;NotThr&quot;</span>,<span class="st">&quot;Thr&quot;</span>,<span class="st">&quot;Ext&quot;</span>)</span>
-<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;NotThr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>], </span>
-<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Thr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>], </span>
-<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Ext&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;NotThr&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>], </span>
-<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>                    cm<span class="sc">$</span>byClass[<span class="st">&quot;Thr&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>], </span>
-<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                    cm<span class="sc">$</span>byClass[<span class="st">&quot;Ext&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
-<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
-<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
-<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
-<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,</span>
-<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
-<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> trainMM</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>train<span class="sc">$</span>label <span class="ot">&lt;-</span> label</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>MMCounts <span class="ot">&lt;-</span> <span class="fu">table</span>(train<span class="sc">$</span>label)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>MM <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)],</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>importanceMM <span class="ot">=</span> <span class="fu">importance</span>(MM)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>PredMM <span class="ot">&lt;-</span> <span class="fu">predict</span>(MM, testMM)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredMM) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>testfactorMM <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>PredFactorMM <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredMM)</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorMM, testfactorMM)</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cm<span class="sc">$</span>byClass)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;NotThr&quot;</span>,<span class="st">&quot;Thr&quot;</span>,<span class="st">&quot;Ext&quot;</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;NotThr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>], </span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Thr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>], </span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Ext&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;NotThr&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>], </span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>                    cm<span class="sc">$</span>byClass[<span class="st">&quot;Thr&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>], </span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>                    cm<span class="sc">$</span>byClass[<span class="st">&quot;Ext&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Score
-Accuracy   0.83
-Recall     0.59
-Precision  0.52
-F1         0.55</code></pre>
+Accuracy   0.98
+Recall     0.95
+Precision  0.97
+F1         0.96</code></pre>
 </div>
 </div>
 </section>
 <section id="zscore-model" class="level4">
 <h4 class="anchored" data-anchor-id="zscore-model">ZScore Model</h4>
-<ol type="1">
-<li>Calculate and print the accuracy of the test set</li>
-<li>Convert to a factor</li>
-<li>Obtain the confusion matrix</li>
-<li>Calculate the average recall rate (Sensitivity)</li>
-<li>Calculate the average precision rate (Positive Predictive Value)</li>
-<li>print results</li>
-</ol>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ZS <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)],</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>                      <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>ImportanceZS <span class="ot">=</span> <span class="fu">importance</span>(ZS)</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>PredZS <span class="ot">&lt;-</span> <span class="fu">predict</span>(ZS, TestZS)</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredZS) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>PredFactorZS <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredZS)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorZS, label_test_factor)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
-<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
-<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
-<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
-<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
-<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> TrainZS</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>train<span class="sc">$</span>label <span class="ot">&lt;-</span> label</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>ZSCounts <span class="ot">&lt;-</span> <span class="fu">table</span>(train<span class="sc">$</span>label)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>ZS <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)],</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>ImportanceZS <span class="ot">=</span> <span class="fu">importance</span>(ZS)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>PredZS <span class="ot">&lt;-</span> <span class="fu">predict</span>(ZS, TestZS)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredZS) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>PredFactorZS <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredZS)</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorZS, label_test_factor)</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Score
-Accuracy   0.65
-Recall     0.59
-Precision  0.49
-F1         0.53</code></pre>
+Accuracy   0.30
+Recall     0.47
+Precision  0.32
+F1         0.38</code></pre>
 </div>
 </div>
 </section>
 <section id="max-absolute-value-model" class="level4">
 <h4 class="anchored" data-anchor-id="max-absolute-value-model">Max Absolute Value Model</h4>
-<ol type="1">
-<li>Calculate and print the accuracy of the test set</li>
-<li>Convert to a factor</li>
-<li>Obtain the confusion matrix</li>
-<li>Calculate the average recall rate (Sensitivity)</li>
-<li>Calculate the average precision rate (Positive Predictive Value)</li>
-<li>print results</li>
-</ol>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>MAV <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)], </span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), </span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ntree =</span> <span class="dv">4</span>)</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>ImportanceMAV <span class="ot">=</span> <span class="fu">importance</span>(MAV)</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>PredMAV <span class="ot">&lt;-</span> <span class="fu">predict</span>(MAV, TestMAV)</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredMAV) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>PredFactorMAV <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredMAV)</span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorMAV, label_test_factor)</span>
-<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
-<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
-<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
-<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
-<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
-<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> TrainMAV</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>train<span class="sc">$</span>label <span class="ot">&lt;-</span> label</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>MAVCounts <span class="ot">&lt;-</span> <span class="fu">table</span>(train<span class="sc">$</span>label)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>MAV <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)], </span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), </span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>                        <span class="at">ntree =</span> <span class="dv">4</span>)</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>ImportanceMAV <span class="ot">=</span> <span class="fu">importance</span>(MAV)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>PredMAV <span class="ot">&lt;-</span> <span class="fu">predict</span>(MAV, TestMAV)</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredMAV) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>PredFactorMAV <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredMAV)</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorMAV, label_test_factor)</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>                  <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Score
-Accuracy   0.72
-Recall     0.52
-Precision  0.46
-F1         0.49</code></pre>
+Accuracy   0.92
+Recall     0.90
+Precision  0.85
+F1         0.87</code></pre>
 </div>
 </div>
 </section>
 <section id="l1-normalization-model" class="level4">
 <h4 class="anchored" data-anchor-id="l1-normalization-model">L1 Normalization Model</h4>
-<ol type="1">
-<li>Calculate and print the accuracy of the test set</li>
-<li>Convert to a factor</li>
-<li>Obtain the confusion matrix</li>
-<li>Calculate the average recall rate (Sensitivity)</li>
-<li>Calculate the average precision rate (Positive Predictive Value)</li>
-<li>print results</li>
-</ol>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>L1 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)], </span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>L1Importance <span class="ot">=</span> <span class="fu">importance</span>(L1)</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>PredL1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(L1, TestL1)</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredL1) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>PredFactorL1 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredL1)</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorL1, label_test_factor)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
-<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
-<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
-<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
-<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
-<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> trainL1</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>train<span class="sc">$</span>label <span class="ot">&lt;-</span> label</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>L1Counts <span class="ot">&lt;-</span> <span class="fu">table</span>(train<span class="sc">$</span>label)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>L1 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)], </span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>L1Importance <span class="ot">=</span> <span class="fu">importance</span>(L1)</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>PredL1 <span class="ot">&lt;-</span> <span class="fu">predict</span>(L1, TestL1)</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredL1) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>PredFactorL1 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredL1)</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorL1, label_test_factor)</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>                              cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>                            cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol=</span><span class="dv">1</span>,<span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Score
-Accuracy   0.80
-Recall     0.55
-Precision  0.73
-F1         0.63</code></pre>
+Accuracy   0.82
+Recall     0.56
+Precision  0.61
+F1         0.58</code></pre>
 </div>
 </div>
 <section id="l2-normalization-model" class="level5">
 <h5 class="anchored" data-anchor-id="l2-normalization-model">L2 Normalization Model</h5>
-<ol type="1">
-<li>Calculate and print the accuracy of the test set</li>
-<li>Convert to a factor</li>
-<li>Obtain the confusion matrix</li>
-<li>Calculate the average recall rate (Sensitivity)</li>
-<li>Calculate the average precision rate (Positive Predictive Value)</li>
-<li>print results</li>
-</ol>
 <div class="cell">
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>L2 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)], </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>L2Importance <span class="ot">=</span> <span class="fu">importance</span>(L2)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>PredL2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(L2, TestL2)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredL2) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
-<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>PredFactorL2 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredL2)</span>
-<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorL2, label_test_factor)</span>
-<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
-<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>train <span class="ot">&lt;-</span> TrainL2</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>train<span class="sc">$</span>label <span class="ot">&lt;-</span> label</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>L2Counts <span class="ot">&lt;-</span> <span class="fu">table</span>(train<span class="sc">$</span>label)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>L2 <span class="ot">&lt;-</span> <span class="fu">randomForest</span>(<span class="at">x =</span> train[<span class="sc">-</span><span class="fu">ncol</span>(data_train_combined)], </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>                        <span class="at">y =</span> <span class="fu">as.factor</span>(train<span class="sc">$</span>label), <span class="at">ntree =</span> <span class="dv">4</span>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>L2Importance <span class="ot">=</span> <span class="fu">importance</span>(L2)</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>PredL2 <span class="ot">&lt;-</span> <span class="fu">predict</span>(L2, TestL2)</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>accuracy <span class="ot">&lt;-</span> <span class="fu">sum</span>(label_test <span class="sc">==</span> PredL2) <span class="sc">/</span> <span class="fu">length</span>(label_test)</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>label_test_factor <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(label_test)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>PredFactorL2 <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(PredL2)</span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a>cm <span class="ot">&lt;-</span> <span class="fu">confusionMatrix</span>(PredFactorL2, label_test_factor)</span>
 <span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
-<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>],</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
 <span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
-<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
-<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),<span class="at">ncol=</span><span class="dv">1</span>,</span>
-<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>                    <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
-<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
-<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>precision <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 1&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 2&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>],</span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>                 cm<span class="sc">$</span>byClass[<span class="st">&quot;Class: 3&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]),<span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>F1 <span class="ot">=</span> <span class="dv">2</span> <span class="sc">*</span> recall <span class="sc">*</span> precision <span class="sc">/</span> ( recall <span class="sc">+</span> precision )</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),<span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),<span class="fu">round</span>(F1,<span class="dv">2</span>)),<span class="at">ncol=</span><span class="dv">1</span>,</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>                    <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Score
-Accuracy   0.78
-Recall     0.52
-Precision  0.53
-F1         0.52</code></pre>
+Accuracy   0.70
+Recall     0.44
+Precision  0.42
+F1         0.43</code></pre>
 </div>
 </div>
 </section>
@@ -4817,10 +4597,10 @@ F1         0.52</code></pre>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Score
-Accuracy   0.83
-Recall     0.59
-Precision  0.52
-F1         0.55</code></pre>
+Accuracy   0.93
+Recall     0.84
+Precision  0.91
+F1         0.87</code></pre>
 </div>
 </div>
 <div class="cell">
@@ -4841,7 +4621,7 @@ F1         0.55</code></pre>
 <span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">varImp</span>(bagged_cv), <span class="dv">10</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<p><img src="data:image/png;base64,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" class="img-fluid" width="672"></p>
+<p><img src="data:image/png;base64,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" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -4894,31 +4674,50 @@ F1         0.55</code></pre>
 <span id="cb28-42"><a href="#cb28-42" aria-hidden="true" tabindex="-1"></a>                          <span class="st">&quot;)&quot;</span>,<span class="at">sep=</span><span class="st">&quot;&quot;</span>),</span>
 <span id="cb28-43"><a href="#cb28-43" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(cm<span class="sc">$</span>overall[<span class="st">&#39;AccuracyNull&#39;</span>],<span class="dv">2</span>),</span>
 <span id="cb28-44"><a href="#cb28-44" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span>(cm<span class="sc">$</span>overall[<span class="st">&#39;AccuracyPValue&#39;</span>]<span class="sc">&lt;</span><span class="fl">0.001</span>){<span class="st">&quot;&lt;.001&quot;</span>}</span>
-<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span> <span class="fu">round</span>(cm<span class="sc">$</span>overall[<span class="st">&#39;AccuracyPValue&#39;</span>],<span class="dv">3</span>),</span>
-<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">if</span>(cm<span class="sc">$</span>overall[<span class="st">&#39;McnemarPValue&#39;</span>]<span class="sc">&lt;</span><span class="fl">0.001</span>){<span class="st">&quot;&lt;.001&quot;</span>}</span>
-<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span> <span class="fu">round</span>(cm<span class="sc">$</span>overall[<span class="st">&#39;McnemarPValue&#39;</span>],<span class="dv">3</span>)),</span>
-<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol=</span><span class="dv">1</span>,</span>
-<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a>                    <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
-<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Kappa&#39;</span>,<span class="st">&#39;95% CI&#39;</span>,<span class="st">&#39;AccuracyNull&#39;</span>,<span class="st">&#39;Accuracy p-value&#39;</span>,<span class="st">&#39;Mcnemar</span><span class="sc">\&#39;</span><span class="st">s p-value&#39;</span>)</span>
-<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable,<span class="at">quote=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb28-45"><a href="#cb28-45" aria-hidden="true" tabindex="-1"></a>                    <span class="cf">else</span> <span class="fu">round</span>(cm<span class="sc">$</span>overall[<span class="st">&#39;AccuracyPValue&#39;</span>],<span class="dv">3</span>)),</span>
+<span id="cb28-46"><a href="#cb28-46" aria-hidden="true" tabindex="-1"></a>                    <span class="at">ncol=</span><span class="dv">1</span>,</span>
+<span id="cb28-47"><a href="#cb28-47" aria-hidden="true" tabindex="-1"></a>                    <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb28-48"><a href="#cb28-48" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
+<span id="cb28-49"><a href="#cb28-49" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Kappa&#39;</span>,<span class="st">&#39;95% CI&#39;</span>,<span class="st">&#39;AccuracyNull&#39;</span>,<span class="st">&#39;Accuracy p-value&#39;</span>)</span>
+<span id="cb28-50"><a href="#cb28-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-51"><a href="#cb28-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-52"><a href="#cb28-52" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(plt1, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">1</span>,</span>
+<span id="cb28-53"><a href="#cb28-53" aria-hidden="true" tabindex="-1"></a>            <span class="at">top=</span><span class="fu">textGrob</span>(<span class="st">&quot;Confusion Matrix&quot;</span>,<span class="at">gp=</span><span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">25</span>,<span class="at">font=</span><span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>                  Score      
-Accuracy          0.83       
-Kappa             0.62       
-95% CI            (0.78,0.87)
-AccuracyNull      0.74       
-Accuracy p-value  &lt;.001      
-Mcnemar&#39;s p-value &lt;.001      </code></pre>
+<div class="cell-output-display">
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABUAAAAPACAIAAAB7BESOAAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nOzdb4yjWX3g+5+TyYpob7SJILyBYejEblDThIRM7oTH+debu7kqt3bUYUeNAGlasLq2ZhNd14CGbNKgkJvpbC4j6PIqLLKvFtQjAZpWL7c1qy5rsxt1QlKGXiBsmM4I2iY9w9BvsjtKVqxuRjsE3xf1p+vP4yq77Cr7lD+fV4zL5eeUy9X46/M85xT6/X4AAAAAs+37pj0AAAAAYG8CHgAAABIg4AEAACABAh4AAAASIOABAAAgAQIeAAAAEiDgAQAAIAECHgAAABIg4AEAACAB90x7AAAp6PXa165dffbyzZsRnU5n85eyLIuTJ8+eOHP69EKxOK0BJqjXa1974vHLN7c+oatP58kTZx6rL3g2AQA2K/T7/WmPAWBW9XrtJ8493tpa7LvKqksflJ576TVq5xZbuz6r1eV+c+GwxnPY2rVCpbXlliP94x6IXqNcWhz4EsqWuiv1if0V7nYsv7mI8JIGODxOoQfI02vXyuVCqVQZpd4jotNarJQK5Vqj3TuooaWuXSuX9qj3iOxE6XBGw5HUuXxtcn+AvWuXR/pHYGb02o1audae9jAAmCQBD7BNr10rF0Yu9y06rcVKqVwT8Tv0GuXKXvEOY5tgwSfZ7712o1YuVfb8pAyA1Ah4gE16jdV2n8RjdVqVkumvLXqNc4PPet7i5HFXITCOiRV8cv2u3QGONAEPsKbXru12Ve2+dFqVgoZfN3wKOYOecU2o4BPr93ZDuwMcbQIeICIi2rXdZ96zrLq0vNztdrv9zbrdbnd5aamaDf7OVqXccC59RET32ZwnOKsuLW99UrvdSS5AxryaSMEn1u8ReX9jABwhAh4gbwnlu7Lqcrfb76+sNOsLC8Xitp3iisVicaFeb670+93lQR3fWSyZho/o3bq547bq8kqzvm37ve3P8dGz0OxvY73uCciyrX9/Eyj4bf2+/Qis85IGOCwCHqBdG1DvWXW5219pDrm9e3Gh3lzpLudHfKsi4XdOwGdLj3mXz6ScPHt2wgW/vd/Pnj051uMBwLgEPDDvBuV7dbm70hx5Q/fiQnOlu5TX8K3HnUi/naXqmKTjpydb8Dv6/fTxMR4NACZAwAPzbUC+V5f7o8f7umJ9Zbm68+bO4jkJDweoONGC39nvPm8CYNoEPDDPeo3Hc/I9W+qOe/3mQjM34Se3NzWwU/H4tnPcO8929/tY+h2AGSTggTnWfiJn17hs6dIklkBfeCznRPrO4hNzfyU8HKCFM9s+OWtd3eefnH4HYBYJeGB+ta/mTL9XPzihHcyK9Q/mTMLvJyd67XajViuXy4UtyuVyudZotHsHNKvf6+Uctlwu12oHd8xZtPH05z3/B/kLGH5kXhh3TargD7bfV391Oa+qmXhhbdFrN2p3R1kul2uN9kwMDGBebd/2A2BO5C41ly119/7OfR8iy6pLy8MfYPC+dDvHPdID9/v97Wf4V5e3HHiY4+55zPzF/PayZSQ7xjn6b2jfjzDC0x8buw3uc0zbfurJjWwmXxgTkfPqWhvrjmd3pCc3/+HXXzSH95sb/snMu1pn14fc8Qcw8Je+y59wVt0yriGemPwHG+UP+hD+zQaYfWbggTm1bYJt1cSm31cVT5+tZtWlpfW0W1lp1odbGq/XbtTKpcpia+cYc3Vai5VSoVwbf2qs1ygXSpVhjttpLVZKkzjkDFp9FoZ++iOi06qUSgc/OemFsbeJzMFv3fNwAvPvvXZt1NdUxCR/gSPrNcqlnGuM1nRalRGvByrWL411WVGvcW7ncCZ0xRNAQgQ8MKd2bkoeUT0z4V3Ji/XmSrNeH3Ij+XXtkRJtk05rzHBq13Z7yz7wkEdscf12rTDis7BuNV0P7OnwwhjOBAp+6+U14/Z7r10rD/fhxwCdVqV0yA2fm8tbjP7PZX7Ctyq1IX498h1gjYAH5lPe9e/ZidIURrJVr10rjPNOf4y3+r1GeX9HPlL74/Ua5dyNBYfXWSwNEyQj8sIYwdgFP9F+b9fGivd1rcohPpt753u29Ng+Pu7cb8LLd4ANAh6YS71bN3fcNgPLTLdrpTHrMSIiWpXRE/JqbZ+zzhFHaHX9vbtlKMPNKY7AC2M0Yxb8BPt9/A+E7jq0Z/Pm43v+Gez7SdlPwst3gE0EPDCX8k6gP3l8ym8H27WBb/VXl7/bvEpat9tdXqpmg9aYGjUhW63th8454i4HbD1+BCbhB+T7+pO/ba2sXX8D+968LI8XxsjGKvgJ9nvuTpUREWtrY+S+qAYvdHdIz2ans2nQW5Zn7HaXq1k23pMyasLLd4Ctxl4GDyA9easZT3sx40FrSW9b7XmHwSuD77Y+9m4rV+++8PWg4+39/O1nBe/DXIU+71Wxx5M/8Pt2H+hIz8TRf2Hsy+BV6Af8IEMvF7/1O7cOf7TX8KBXxjCL9HfzM36vZ3Nfy+QP/KVn+d+843OHkY87/Hryuffcz74CAEeFGXiAVdOdgO81Hs+bZK0ud1eauy9cX1xoruS3075O5M6WuruvlV9caK7kveHvPNsd+WCzZcdpGdlSd48nPyIiivWVnMqY0PPhhbFP+56Dn9z8e970e7bUXRlqK4piPffpPMxns7q80sy9zr042qqceY+QNwufs2ZCO+8Cjupy/rAA5oOAB+ZR3hn0U5V7pm11eah+jMHtNPKJ3NXllWFOTF1o5hzt5q20T6LfsS7CCO2W1yMTOYveC2Pf9lnwk+v3nIU2Rjzxe+GxwfuwH7j9rVI3tGESPvfaEfkOzDsBDxARU16CPm9N/OrykJG2JredRgu1Ed6y76ijozAFP47i6bNZZFlWrVaXlpeXu91ufwKd4YUxhh1DGeaThAn2+7XL2z97qX5wxOu2i6fPbo/cw/o45ODX9ByQ8BsL9cl3gFwCHmDqcjJtP9NfeaU2SqiN9Ja9dGJ6c4OHZLRd0Ir1lf7Kykqz2awvLCyMf5JxhBfGmLYXfOfytb1+nxNcv65YX+l3u93l5aWlajXLsv1snB7F4yf3PYCxHMqeHLkJv7ZQn3wHGEDAA0xbzqm2I0/VrcqZ/hw+1EZ7yz61sjgwOT9RZ7FUrrV707o0wAtjTCMX/ET3f4+IYrG4sFCvN5srKyv9SZyScWgOaUmQvITvLD7RyN18T74DRAh4gDVTPAF85xX5+5iqW5UTakOfcjviW/YZmmmdkNyfqNOqlEqFQqFcrjUah9zyXhjjGrHgt53xMPWNJafn8K4oyl0+YjF35Qf5DhAh4IH5NEuNkTPPOsa7552hNuwnE1NdBGAmFOsfHLyHWqfTWlxcbflCuVyrHULMe2GMb6SC39bv+/60ZBJ6vXa7USvnTUQfhsP87CJ/X/ht5DvAOgEPsGpqi6jvnGed7LvnIX+wOZ5u3DDkqt+dTqu1eHdi/qBS3gtjAkYo+Cn2e6/X67Xb7UatViuXy4VCoVAqVSqLrc6M7ZZxQPZMePkOcJeAB+bRLF2nu9NYU54zdXJBcoaaDNys09lI+YOflPfC2IftP/fAgj+0fu/12u1Go1Yrr7V6oVAolUqlSqWy2Gq1OrMQ7Yd+1sWuf3jyHWAzAQ/MpZyamdZF8DkrlTE9xfpKd6m6j9ZdK/lyrdGeTMZ7YUzEjp3YBhT8gfd7r92o3Z1cX2y1OjPR6rNi4AUs8h1gKwEPzKW8KfipnUM/UbN9ckESivXmSnd5PxEfax1frk0o4idobl8YwxX8gfZ7r1ErF0qVxZZgH90oGx4CzAMBD8ynvCn4vXeJHl2vUV5d8uywFjA3bzsRxYXmSr/fXV6qZvuaja+UajOWHfP7whim4Lc9OxPs916jXChJ9z3l7vseERGtyqz9LQFMlYAH5tOON/VxMAXffbazuuTZ3QXMt51iPbczowkoLtSbKyv9fr+7vDTqefVjZ4cXxqTsXfC9a5c3F/bE+r3XKJdydkTbW5Zl1aWl5W53efDGCEfJ4HyPkPAAWwh4YE7l5dHkC37bibkRnU7r8q09vmmsq/EPeuny1Exm4rm4UK83V/r9fr/bXV6qDjctP/Hs8MLYp70K/oD6vV0bpt6zLMuyarVaXVpeXu52u/1+v99fWVlp1usLxfn4De2e7xESHmATAQ/Mq50bY0+84HuNx3e+L83Ont76rnzn2fxjXI0/vydKH5JicaHeXJ2W73dXJ+YHx/x4l+96YUzM7gV/MP2e+9cfERFZdWlpS6uvrDSbzWZ9YWGhOCfJvllevu/8o5LwAGsEPDC3cgt+8YnJvUvc1gWrdvR7zrkAY3yOsHOe9dB3hDpYo85C73xCJqe4OjG/eo597hn2Yy2M6IUxOTsL/u7r6GD6vf1Ezux7Vl3u9vsrzXp9Pls9R16+V5dXVnZeOyDhASJCwAPzbOGxnK2HW483JjQJn/8Ofke/58207vtc6R2n7M/TidJ5DmviubjQXOnufDmNtzehF8bk7Cj4jbMjDqjfdz7hUV1eaS6M9qQf9RMn8vO9uZD/r7OEBwgBD8y1vJXsorN4bhIJn39ZZ/WD9Z1v4HMux9/nxwg51TD5/aynbKRJ7dyTIAbeuddrtxuNWq1cLpcL5ZF/AwN3st4vL4wJGlTwB3T+/M7wzpYeG/mhR3r9pmdwvseAPycJDyDggbmWn1ydxXH3AOs1ynn5PugtfM7J/Ps5lz/3WtIjd570KJPQw/dPr1EulEqlSmVxsdXqdDqdg9lVcEReGBOUX/AHtH5dzpUb+zjjIe8knvFO6pglu+Z7RMRCM2cNfgkPzD0BD8y33PeIEa1KudbeZ7/1Bi0+nTv9vjqKnMvxW5XRRpA75Z93xn5Sdp5FPvzKcL3GuaG38MqZ7B49lXdOu46byV4YE5RX8Ae1f1yOUddDGPAp4FGR+6nS9k848xN+Ylc5ASRJwAPzLvdK+IhOq1IaPeJ77Vq5lP+2e8vc0lCDaFVKQw6g167lvtkf/JFBKvJ2+xtqDm7gxygDjJ/KeZ8XjH2duRfGBOUU/BPPHky/53zwNMoHQr12bZ8byCciP98v7XxV5iX8hK5yAkiUgAfmXrGes+JxRKxGfKFcawwVS712rVwuVVr577p3zfcYeP30EJ8irH1mkHPY/Vx0O3NySmjPEyR2+RhlsEGpXB7m199rN3KCaxK/AC+MCdpZ8K3Nr5IJzr/nffAUrcoQL6Zeu1YuDPx3ZE87/17G28vwQAyd7xH5f5gSHphnAh5gdZpn0G7endZipVQolMu1Rrvd621927i67lmtXC4USpVWZ8Cb7mypu3u+r48h//iV0urRtxy81+utHnjQe/2Bb4jTkrvQ4NoJEqtPyt0b85+SanW4peUGHWlx/fnf8dtf/SU0auVCqTLkjgP74IUxOQN+x6smev583hkdqy+mnb+yiN7Gb23vdh95a8KhPjc4RCPle0QU65ckPMAmfQD6/X6/P2AaflxZdXkKQ9jroDuPNMIw+/1+v79z07SDOuZYz0p1efv3Z0vd4X+m/dvlMKM/E0f7hbEvOb+rYY4z+Fc81ChHeHom+WIaYaB7vlSyna/MHd+z24t3zCcmb3x7Hy73yRx9lABHgRl4gDULzf7gefh9ypa6K3tPvm8aQncSqTbUjH86BqxSMIy9rlzYJneub58HXpnkNLcXxqQMnIOf+Pp1E9lVMFta3vGK3H0KPveak80601zHftTZ93Vm4QE2CHiAuxaaK92JRXxWXe6OXHHFheZ4I9jXUWfc4FUKdlVdHj1Xi/WV8WdOD6KTvTAmZEDBH8T68wvNsV5L2VK3v1Jf2HE1/e4BvutVAqtGPgl/Uvab7xEDPg+R8MA8EvAAWxQXmiv9cSs+qy4td1eaC/vKpeK+P0bIqvs/6oxbaI52SnJWXe7u9/mvj/EpTlZd6vYPqJO9MCYid325cff7G3SsfX4elFWXN15Goy5LV6x/cI/XyJSm4MfJ94gBi0FIeGD+CHiAnYoLzZV+v7u8NGotZVl1udvtrzTr49XS2scIQx8/qy4td/tHu9GK9dVPVvZ6Ssb69GTtUCM+/RFrv/r+SvNgJ7m9MMaXs77chNYbzLP+sh3y7jt/YTlTz3vshL7Q3ONjg2lMwefl+6jbGUp4gIgo9Pv9aY8BYMb1eu1r164+e/nmzYjOtqXmsyyLOHny7JkzpxcOqJJ67cbq0bceO8uygz3u7Oq1G9euXr685QnJsuzk2Q8+dnqhOOFno9duX7t69dmbN29u/+VnWRYnT549ceb05I863Mi8MFKy/rKNHb+vOHny7JlJv3Z7vfa1Jx7f8VeyeqwxP2EEYGoEPAAAACTAKfQAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8Ah61dK+yqXC7XGu3eFEfYa5QLhUKhUGtvunFt2OXGxEd2cI8MAEeJgAeAWdPpdFqLldKRDNpeu1Y+ij8XABwCAQ8As6qzWDparduuFUqVVmfawwCARAl4AJiSbKnbz9VdXsrW7tNZfKK964McooVmv9/v91fqxXQeGQCOEgEPALOmuFBf6a43fOvqzBQ8ADBVAh4AZlHx9Nm1gr956yidRQ8A7JuAB4CZVDx+cvtNa2vD19rRazdq5buL1m+5UL7XbtTK5c1r2u+6pP3Wu5fLtYH33W2t+B2Psu2Qq0OvtCIiorNY2vpIwz/y4B9n82PsNRoASJOAB4CZ1Lt1c/V/nDy+/crwq7VSZfHuWnCdu/foNcqFUmWx1dm0UNz6kva1nafi77x7p9OqlAq1a8+OMtK8R1mslPKOOJrBP065NnB1v2u18sGMBgCmTcADwCzqXbu8WqDZidK2L7Varbsr4HWXl5YfW1j9lka5tNiJiKy6tLyxPl63u1zNIqLTqmxr2HZt9e6RVTfuvnrn1uLQS8VvHDSyjYNuOuJ6ZhfrK/1+f7m6+iOtjX33Res2PXJ1udvd/tMslnKLvLO42Opk1aWNb1hfELDTevxIregPwDwS8AAwW3q9dqO23q6RnT2dU7nV5fX4LS7UF4oREb3GudVvqS6vNNdui4goFheaa0vibWnYXuPxVkREttRdaW7c/e6dh9N+Yr3euysbBy0uNC+tPsYYi+hvfuTmQnH9oTcNsFXJn1SvLq806xvfcHdBwM7lawoegKQJeACYkvVLwbcpbT4/vvrBvFnq6pmF7Tetz9hXl5s7vhZRrK8W9d2gXu/jnAMU6x+sDvkjtK+28oe58Rj7XILv7scLl3Y+Aes/TeRNqmdLj21/AtaXE+g8293PWABgVgh4AJhRWXW5m1fjOWfV3+33nWm/aj1i14J6/Qr7/PsvnBmu4Hd7lPH2du8+u/oRxs4FACJi1yTP+47SieHPKQCA2SXgAWDGZNnqReybzmzfKqdR14O3Vcmb1C9sWgF+NXnX7z/AkMW79ig5HyiMaf2TgYGPvD7AHRP8kx8LAMyMe6Y9AACYV9lSd5/z05Mbwozn7oAJ+LUp+GEX2gOAI8IMPAAcIdXl/h62nJQ/61eFD7yCfmOTPQCYIwIeAI6AgaeU73H/AfY4w36b/I8Beo1yoVAoFPaz//qey87tcY08ABxJAh4AjoCN4h20Vdp6Tq/tzF48fXZ1HfereXk97Pz2+mJ3eY+y57J6u1r/gCF/fBur38/6JQAAMFECHgCOgoXH1ndeP7dza7WcXeM2Cn7nZuobO8oPcdT1gt+xn9vGAffV73e3ocvbKW59j7kBm+wBwFEl4AHgSNjYHL2zWCrXGu2N7O21G+W1Neg375F+dzP1yqa799q1cmnYfI+IheZydf2gWx5k5wFjY1597TSBXm+30/3vfiJRKtfa63ftbRpgzo7vAHCkCXgAOCKK9ZXuWvS2Fiul9f3jSpX13t226H2xvrJczbbevVRpdSKrLi0NvXH6QnP9oFsfJCKrLm9bZX/jRP/FUqFQKJWe2O3y+M0/TqW0/tAbjz39JfwB4LAJeAA4Oor1lX53eamaZZsCfH1b+ZzeXWiudLvL1bv3zrLqcneleXp/B916xJXmjgnyhWZ39TODdbsvubfzkddG2F1pqncA5k+h3+9PewwAAADAHszAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQALumfYAgN3duPjgheunzj/96APTHgkwv+7cuHL5M396/fbtiIg4duzUz7/r7EMPvGbKowLm2Z0bVy5/5snrq/8sxbFTD/tniblQ6Pf70x4DMNCNiw9euB4h4IHpuXGxfmH9PfImxx7+ROMhb5aBabhzpf7Ikzv+XTp26nzDGyaOOKfQw8y6s1bvAFN04+KF67cjjp06/4mnV33i/MPHIuL2k49cvDHt0QHz6M6Vjzy5/d+lU8cibl+/4J8ljjoBD7Pozo0rF+uPqHdg2u5c+cz1iDh1vvHoxqmpr3ngocb5UxER1zveKgOH7sblJ29HHHv4A5v/XXr0Aw8fC/8scfQJeJg5d67UH7nw5PXbcezU+U+svkkGmI5vv3A7Ik5l289JfSA7FRHx3At3Dn9MwJx74NGnn3766e3X8Lzm3tdPZzhwqCxiBzNpYymWG51pDwWYZw88+vTTj057EAB7u/PCcxFx7N7XTnsgcKAEPMyc1zzUePqhaQ8CYDc3Otcj4tjPv80qdsD03blx8SMXrt+OOPUua2tyxAl4AGA061fGe6cMTNmmFX+PPXz+Aw9Zg56jzjXwAMAoblx8ZHUBqbPeKQPTdeeF544dO3bsWETE7ScvfOTiFQtzcMSZgQcAhnbjYv3C9dXdlk2/A9P2mocajdXrDu/cuPKRC09ef/KRuPdpe8FzhJmBBwCGcudK/cEL12/HsYc/0fD+GJgpGxtcXv+MWXiOMgEPAOztxsX62pnznzD3Dsyk1957bNpDgIMm4AGA3d25cXF16v3U+R1bLwMcrjtX6g8++OCDF29MeyAwDQIeANjNjYuPXLgeTpwHZsNr7n19RMT1zvaCv3H5ydsR8fp7fczIESbgAYCB7lypr9e7qXdgJjxw9uFjEXH9Qv3ijfXL3e+srbBpgwyOOqvQAwCDrE1oxe0nH3nwyZyvnzpvuWfgsL3mocb5Fx68cP329QuPXN/8BRtkcPSZgQcABrjRub73nQAO3QOPPv2J86eObSxad+zYqYfPu86HOVDo9/vTHgMAAACwBzPwAAAAkAABDwAAAAkQ8AAAAJAAAQ8z7f7777///vunPQqANf5RAmaNf5eYKwIeAAAAEiDgAQAAIAECHgAAABIg4AEAACABAh4AAAASIOABAAAgAQIeAAAAElDo9/vTHgMAAACwBzPwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQAAEPAAAACRDwAAAAkAABDwAAAAkQ8AAAAJAAAQ8AAAAJEPAAAACQgHumPYAj64uv/r1pDwHgrp/9yjunPQSAre49Nu0RACTGDDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDAAwAAQAIEPAAAACRAwAMAAEACBDwAAAAkQMADAABAAgQ8AAAAJEDA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AAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAE6Gq3203PAAAAADyEDTwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAgP8HHYBJ2rJdE10AAAAASUVORK5CYII=" class="img-fluid" width="672"></p>
 </div>
 <details>
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">grid.arrange</span>(plt1, <span class="at">nrow =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">1</span>,</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">top=</span><span class="fu">textGrob</span>(<span class="st">&quot;Confusion Matrix&quot;</span>,<span class="at">gp=</span><span class="fu">gpar</span>(<span class="at">fontsize=</span><span class="dv">25</span>,<span class="at">font=</span><span class="dv">1</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable,<span class="at">quote=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<p><img src="data:image/png;base64,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AACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACNw16wEcWX/3pj+a9RAANr3r8v2zHgLAdm/5V7MeAcB297511iPYhxl4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAjcNesBjGjt/MPnrp188srjD816JJCVm5/9rxcu3332+dcd3/LFHz33375Qe22PP/XgF/6n0+/e8vjnf/rXf/nqy98d/Nddbz39i7/xyZ9/40EMF1gcvb+7/MxfNprXB/91olz9N0+ceTA/6cMADti1yn2/1fzNv+z/nydnPRI4cHHMwK+dP3dt1mOAbCM2nf8AACAASURBVD3/0wuXp3yKn9387H/9wsfu1HsI4bWXL//4C+Wf3pzyiYFF1rv48cLH72R5COFGs/6ZQuVP2xM9DOCgtf/dbzVnPQY4NPM/A3977fxj8p2j5UfP//QLH3s19Vtv/NC/PPeh3V/+Waf8o6vfDW9deeOd6fcfPfeTC5dDCHc9+IXXn373z4UQfvT8q3/9sZ++/N1X//Nzv3D8Q3F8OgfMmR9cPlu/EcKJ8uc/3njXL4UQwg9eqPzhZ5rX26XPvrv/yQfHexjAwXq5/e/eW/qrWY8CDtFcv8e/vXbpfFW9c6S88s+dz/63YfU+zI+e+8nV74bwjtf9xmaW//Pf1l4LITz4hX85qPcQwhvffXf54uveGsLLtf/XJDwwifZfNTohJNWNLA8h3Ptg49OVJIRw5fn2mA8DODi9a39ROa3eWTjzOwN/+1L1sWdvhRCOnXzyE0lHx3MEvPJq88xPXw4hvOPus5+++8aZH78w2p/669prIdx16tN337m5/UfP/fcXQgin37D1fvgQQrjv7vLzd2c5ZmChLH+y3f/krq/ee89SCJ3xHwZwQHr/8X8r/B8vhhCS3/zLC//r1wuPfmXWI4JDMr8BH0IIx04++uEzjzx0T1jzfoCj4q4HV37xVz/0828M/3xjtD9w8ys/fTmEcPoXk/s2v/ijl14LITz4np8/iCECbPeD29dDCEtvKWTyMIBM/C8frlUr1ZNvDde+PuuhwOGZ34C/55H6lUfG+yMPPPBA6te//e1vZzAgmNoE0+OvvPqfL4cQ7j77ya2t/rN/+l4I4a433RvCK/98+Q//+wvfHSxcf+fTAYCM9P7uT89+vN0Jofxbp/dYYX7EhwFkIv/b/6n/27MeBMzC/AY8sDH9/taVXzie+u3OT5u1V1/e/O/XXqj9+IW/ed3HmndreGBa7c8ul64M/t8Ttc9/vPquqR4GAEzvSAW8mXaOmn++cTmEcNdSsmO5yf/vH78bQnjtau218I67z376dcfvC2GwJ/zHXn35uz/96+f+Rdkq9MB0/uHm908kSyFcv9EJN1Y+/vkb1Y83zvzSpA8DADLgPT7MrY2V6rbd/b7NO173seZ6vYcQ3vju15W/cHewCj2QhV+qNj6/2vj86mq7+/lKEm40679d+buJHwYAZEDAw7z62X/5m2Er1f0Pb3pHCCG89df+xc5L5d/9C6feEUJ47Z9eOfgBAgsi/67Tq59fDiE0//Jyb+qHAQATE/AwrwbXyd994t1DH/Gmtwz7DX7tH39wIGMCFtW9b0kyfBgAMBEBD3Pq+VdfCCG8I3VJ+Z/75V+7K4Twj3//s13fGmT/XW+694CHBxxF/1CvLOeKy/tdAz/iwwCAjAl4mE8/+vvXQupF8iGEEN74lrtC6r3u69n/P/7ysNvmAYb7peNvDyGE5jdf2PGN9l81OiGEt9+TH+NhAEDGBDzMpx+99FrY4yL59XvdX71Q/mnn+fV5+B89/9Pmx14Nw7MfYB/Lv1lJQghXPlP87Asb97H/Q/uzHy9dCSGcqP3mg2M9DADI1pHaRg6Ojp/90/fCnlfC/1zSfMM/ln/8wndfvfqxV69u+cZbT7/BHnLApO49vfr5v899vN258pnCla3fOFH+/Oer9475MAAgU97mw1wa3Mq+t58/3Xzj2ZW73/qOjS+8464Hv/DG8id3r1oPMLp3/V7/uX9fXjqx8d8nkocrrec+33jXRA8DALKT6/f7sx7D0fR3b/qjWQ8BYNO7Lt8/6yEAbPeWfzXrEQBsd+9bZz2CfZiBBwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACOT6/f6sx3BEvfy9WY8AYNNP1m7PeggA27z+zHtmPQSAyJiBBwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgIeAAAAIiAgAcAAIAICHgAAACIgIAHAACACAh4AAAAiICABwAAgAgcUMD3er2DeWIAAABYSFkGfK9drxSLuVwulysUCpV2CCG0K7lipd6W8wAAADCNrAK+164UC6WVZqez61ud5kqpUBz0PAAAADCJbAK+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BDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQAABDwAAAAEEPAAAAAQQ8AAAABBAwAMAAEAAAQ8AAAABBDwAAAAEEPAAAAAQQMADAABAAAEPAAAAAQQ8AAAABBDwAAAAEEDAAwAAQIChXq/X7xkAAACAF7CBBwAAgAACHgAAAAIIeAAAAAgg4AEAACCAgAcAAIAAAh4AAAACCHgAAAAIIOABAAAggIAHAACAAAIeAAAAAgh4AAAACCDgAQAAIICABwAAgAACHgAAAAIIeAAAAAgg4AEAACCAgAcAAIAAAh4AAAACCHgAAAAIIOABAAAggIAHAACAAAIeAAAAAgh4AAAACCDgAQAAIICABwAAgAACHgAAAAIIeAAAAAgg4AEAACCAgAcAAIAAAh4AAAACCHgAAAAIIOABAAAggIAHAACAAAIeAAAAAgh4AAAACCDgAQAAIICABwAAgAACHgAAAAIIeAAAAAjwL7h1N/iav9erAAAAAElFTkSuQmCC" class="img-fluid" width="672"></p>
+<div class="cell-output cell-output-stdout">
+<pre><code>                 Score      
+Accuracy         0.93       
+Kappa            0.8        
+95% CI           (0.89,0.95)
+AccuracyNull     0.74       
+Accuracy p-value &lt;.001      </code></pre>
+</div>
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>cmBC<span class="ot">&lt;-</span>cm<span class="sc">$</span>byClass</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cmBC)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;NotThr&quot;</span>,<span class="st">&quot;Thr&quot;</span>,<span class="st">&quot;Ext&quot;</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">t</span>(<span class="fu">round</span>(cmBC,<span class="dv">2</span>)),<span class="at">quote=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                     NotThr  Thr  Ext
+Sensitivity            0.99 0.75 0.80
+Specificity            0.79 0.98 1.00
+Pos Pred Value         0.93 0.90 0.89
+Neg Pred Value         0.95 0.93 0.99
+Precision              0.93 0.90 0.89
+Recall                 0.99 0.75 0.80
+F1                     0.96 0.82 0.84
+Prevalence             0.74 0.22 0.04
+Detection Rate         0.73 0.17 0.03
+Detection Prevalence   0.78 0.18 0.03
+Balanced Accuracy      0.89 0.86 0.90</code></pre>
 </div>
 </div>
 </section>
@@ -4927,7 +4726,7 @@ Mcnemar&#39;s p-value &lt;.001      </code></pre>
 <section id="conclusion" class="level2">
 <h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
 <p>Random Forest is a powerful and flexible machine learning algorithm that can be used for a wide range of tasks. It is particularly useful when dealing with complex data composed of a large number of features and when the goal is to achieve high predictive accuracy while avoiding overfitting. The algorithm incorporates versatility in its capabilities for classification and regression tasks, handling missing data, and displaying robustness when faced with outliers and noisy data.</p>
-<p>We produced a predictive model with 88% accuracy, indicating that our explanatory variables were able to differentiate between non threatened, threatened, and extinct taxa. Extinct species were classified with 100% specificity and 70% sensitivity. Most extinctions were perennial shrubs found in the Cape Floristic Region, a global biodiversity hotspot. As range was the strongest predictor of extinction, many of the recorded taxa deemed susceptible were range-restricted. Habitat loss is presented as the second strongest variable of importance in predicting plant extinctions. Predictions were based on a quantitative, evidence-based approach, though gaps in knowledge highlighted areas for further study. Improved species monitoring and documentation of threat factors will aid in a deeper understanding of the ecological role and value of South African plant species.</p>
+<p>We produced a predictive model with 93% accuracy, indicating that our explanatory variables were able to differentiate between non threatened, threatened, and extinct taxa. Extinct species were classified with 100% specificity and 80% sensitivity. Most extinctions were perennial shrubs found in the Cape Floristic Region, a global biodiversity hotspot. As range was the strongest predictor of extinction, many of the recorded taxa deemed susceptible were range-restricted. Habitat loss is presented as the second strongest variable of importance in predicting plant extinctions. Predictions were based on a quantitative, evidence-based approach, though gaps in knowledge highlighted areas for further study. Improved species monitoring and documentation of threat factors will aid in a deeper understanding of the ecological role and value of South African plant species.</p>
 
 </section>
 </section>

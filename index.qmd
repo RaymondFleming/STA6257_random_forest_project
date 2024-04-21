@@ -147,7 +147,7 @@ where $p_i$ is the probability that a randomly labeled element would be incorrec
 
 $$\text{OOB Error} = \frac{1}{N} \sum_{i=1}^{N} I(y_i \neq \hat{y}_{i, \text{OOB}})
 $$
-where $N$ is the number of rows in the dataset
+where $N$ is the number of rows in the dataset and $I$ is an indicator function which returns 1 if $y_i \ne \hat{y}_{i,OOB}$
 
 ### Random Forest involves the following basic concepts:
 1. **Bootstrap Sampling (Bagging):**
@@ -434,7 +434,7 @@ kable(head(original_data, 10))
 ### Encoding Dataset Prview
 
 ```{r, warning=FALSE, echo=TRUE}
-data <- read.csv("All_threat_data.csv")
+EncDF <- read.csv("All_threat_data.csv")
 
 EncDF <- data %>% select(GenSpec,LF,GF,Fam,Biomes,Status,Range,Habitat_degradation,Habitat_loss,IAS,Other,Over_exploitation,Pollution,Unknown,Group)
 EncDF <- EncDF %>% 
@@ -443,7 +443,9 @@ EncDF <- EncDF %>%
 EncDF <- EncDF %>% 
             mutate_at(c("GenSpec","Group","LF","GF","Fam","Biomes","Status","Range","Habitat_degradation","Habitat_loss", "IAS","Other","Over_exploitation","Pollution","Unknown"),as.numeric)
 
-kable(head(EncDF, 10))
+#kable(head(EncDF, 10))
+encode_data <- read_csv("process.csv")
+kable(head(encode_data, 10))
 ```
 Split the dataset into a training set and a test set with a ratio of 7:3. Perform class imbalance handling on the training set using the ROSE library, aiming for an equal data quantity among classes, represented as 1:1:1.
 
@@ -460,8 +462,11 @@ Here, $\lambda$ is a random number between 0 and 1.
 4. Print the initial number of each category
 
 ```{r}
-features <- EncDF[, 1:14]
-label <- EncDF[, 15]
+
+data <- read.csv("process.csv")
+
+features <- data[, 1:14]
+label <- data[, 15]
 
 set.seed(42)
 
@@ -477,7 +482,6 @@ class_counts <- table(data_train$label)
 
 class_counts <- table(data_train$label)
 
-kable(head(EncDF, 10))
 
 ```
 #### Class Balancing
@@ -490,6 +494,7 @@ kable(head(EncDF, 10))
 7. Print the number of each category after class imbalance handling
 
 ```{r}
+
 data_train_AB <- data_train
 data_train_AB <- data_train_AB[data_train_AB$label != '3',]
 data_train_AB_resampled <- ovun.sample(label ~ ., data = data_train_AB, method = "over", N = 980, seed = 1)$data
@@ -515,10 +520,9 @@ cat("Group Counts Pre-Balancing:  ",
 1. Divide the features and label, and apply different normalization to the training and testing sets
 2. Apply Min-Max normalization to features_train and features_test 
 3. Apply Z-Score normalization to each column of features_train
-4. features_test <- as.data.frame(mapply(function(x, y) {(x - mean(y))/sd(y)}, features_test, features_train, SIMPLIFY = FALSE))
-5. Apply Max Absolute Value normalization to the training set
-6. Apply L1 norm normalization to the training set
-7. Apply L2 norm normalization to the training set
+4. Apply Max Absolute Value normalization to the training set
+5. Apply L1 norm normalization to the training set
+6. Apply L2 norm normalization to the training set
 
 ```{r}
 features_train <- data_train_combined[, 1:14]
@@ -625,7 +629,7 @@ data_train_5$label <- label
 class_counts_5 <- table(data_train_5$label)
 ```
 
-#### MinMax Model
+#### Training Steps for Each Model
 1. Calculate and print the accuracy of the test set
 2. Convert to a categorical variable
 3. Obtain the confusion matrix
@@ -633,7 +637,14 @@ class_counts_5 <- table(data_train_5$label)
 5. Calculate the average precision rate (Positive Predictive Value)
 6. Print results
 
+#### MinMax Model
+
+
 ```{r}
+train <- trainMM
+train$label <- label
+MMCounts <- table(train$label)
+
 MM <- randomForest(x = train[-ncol(data_train_combined)],
                         y = as.factor(train$label), ntree = 4)
 importanceMM = importance(MM)
@@ -660,14 +671,12 @@ print(printTable)
 ```
 
 #### ZScore Model
-1. Calculate and print the accuracy of the test set
-2. Convert to a factor
-3. Obtain the confusion matrix
-4. Calculate the average recall rate (Sensitivity)
-5. Calculate the average precision rate (Positive Predictive Value)
-6. print results
+
 
 ```{r}
+train <- TrainZS
+train$label <- label
+ZSCounts <- table(train$label)
 
 ZS <- randomForest(x = train[-ncol(data_train_combined)],
                       y = as.factor(train$label), ntree = 4)
@@ -693,14 +702,13 @@ rownames(printTable)=c('Accuracy','Recall','Precision','F1')
 print(printTable)
 ```
 #### Max Absolute Value Model
-1. Calculate and print the accuracy of the test set
-2. Convert to a factor
-3. Obtain the confusion matrix
-4. Calculate the average recall rate (Sensitivity)
-5. Calculate the average precision rate (Positive Predictive Value)
-6. print results
+
 
 ```{r}
+train <- TrainMAV
+train$label <- label
+MAVCounts <- table(train$label)
+
 MAV <- randomForest(x = train[-ncol(data_train_combined)], 
                         y = as.factor(train$label), 
                         ntree = 4)
@@ -726,14 +734,14 @@ print(printTable)
 ```
 
 #### L1 Normalization Model
-1. Calculate and print the accuracy of the test set
-2. Convert to a factor
-3. Obtain the confusion matrix
-4. Calculate the average recall rate (Sensitivity)
-5. Calculate the average precision rate (Positive Predictive Value)
-6. print results
+
 
 ```{r}
+
+train <- trainL1
+train$label <- label
+L1Counts <- table(train$label)
+
 L1 <- randomForest(x = train[-ncol(data_train_combined)], 
                         y = as.factor(train$label), ntree = 4)
 L1Importance = importance(L1)
@@ -757,14 +765,13 @@ rownames(printTable)=c('Accuracy','Recall','Precision','F1')
 print(printTable)
 ```
 ##### L2 Normalization Model
-1. Calculate and print the accuracy of the test set
-2. Convert to a factor
-3. Obtain the confusion matrix
-4. Calculate the average recall rate (Sensitivity)
-5. Calculate the average precision rate (Positive Predictive Value)
-6. print results
+
 
 ```{r}
+train <- TrainL2
+train$label <- label
+L2Counts <- table(train$label)
+
 L2 <- randomForest(x = train[-ncol(data_train_combined)], 
                         y = as.factor(train$label), ntree = 4)
 L2Importance = importance(L2)
@@ -919,20 +926,24 @@ printTable=matrix(c(round(cm$overall['Accuracy'],2),
                           ")",sep=""),
                     round(cm$overall['AccuracyNull'],2),
                     if(cm$overall['AccuracyPValue']<0.001){"<.001"}
-                    else round(cm$overall['AccuracyPValue'],3),
-                    if(cm$overall['McnemarPValue']<0.001){"<.001"}
-                    else round(cm$overall['McnemarPValue'],3)),
+                    else round(cm$overall['AccuracyPValue'],3)),
                     ncol=1,
                     byrow=TRUE)
 colnames(printTable)=c('Score')
-rownames(printTable)=c('Accuracy','Kappa','95% CI','AccuracyNull','Accuracy p-value','Mcnemar\'s p-value')
-print(printTable,quote=FALSE)
+rownames(printTable)=c('Accuracy','Kappa','95% CI','AccuracyNull','Accuracy p-value')
+
 
 grid.arrange(plt1, nrow = 1, ncol = 1,
          	top=textGrob("Confusion Matrix",gp=gpar(fontsize=25,font=1)))
+print(printTable,quote=FALSE)
+
+cmBC<-cm$byClass
+rownames(cmBC)<-c("NotThr","Thr","Ext")
+print(t(round(cmBC,2)),quote=FALSE)
+
 
 ```
 ## Conclusion
 Random Forest is a powerful and flexible machine learning algorithm that can be used for a wide range of tasks. It is particularly useful when dealing with complex data composed of a large number of features and when the goal is to achieve high predictive accuracy while avoiding overfitting. The algorithm incorporates versatility in its capabilities for classification and regression tasks, handling missing data, and displaying robustness when faced with outliers and noisy data.
 
-We produced a predictive model with 88% accuracy, indicating that our explanatory variables were able to differentiate between non threatened, threatened, and extinct taxa. Extinct species were classified with 100% specificity and 70% sensitivity. Most extinctions were perennial shrubs found in the Cape Floristic Region, a global biodiversity hotspot. As range was the strongest predictor of extinction, many of the recorded taxa deemed susceptible were range-restricted. Habitat loss is presented as the second strongest variable of importance in predicting plant extinctions. Predictions were based on a quantitative, evidence-based approach, though gaps in knowledge highlighted areas for further study. Improved species monitoring and documentation of threat factors will aid in a deeper understanding of the ecological role and value of South African plant species.
+We produced a predictive model with 93% accuracy, indicating that our explanatory variables were able to differentiate between non threatened, threatened, and extinct taxa. Extinct species were classified with 100% specificity and 80% sensitivity. Most extinctions were perennial shrubs found in the Cape Floristic Region, a global biodiversity hotspot. As range was the strongest predictor of extinction, many of the recorded taxa deemed susceptible were range-restricted. Habitat loss is presented as the second strongest variable of importance in predicting plant extinctions. Predictions were based on a quantitative, evidence-based approach, though gaps in knowledge highlighted areas for further study. Improved species monitoring and documentation of threat factors will aid in a deeper understanding of the ecological role and value of South African plant species.
