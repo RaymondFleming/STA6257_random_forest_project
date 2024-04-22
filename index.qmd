@@ -860,14 +860,22 @@ kable(head(original_data, 10))
 ```{r, warning=FALSE, echo=TRUE}
 EncDF <- read.csv("All_threat_data.csv")
 
-EncDF <- data %>% select(GenSpec,LF,GF,Fam,Biomes,Status,Range,Habitat_degradation,Habitat_loss,IAS,Other,Over_exploitation,Pollution,Unknown,Group)
+EncDF <- data %>% select(GenSpec,LF,GF,Fam,Biomes,Status,Range,
+                         Habitat_degradation,Habitat_loss,IAS,Other,
+                         Over_exploitation,Pollution,Unknown,Group)
 EncDF <- EncDF %>% 
             mutate(across(c(
-              "GenSpec","Group","LF","GF","Fam","Biomes","Status","Range","Habitat_degradation","Habitat_loss", "IAS","Other","Over_exploitation","Pollution","Unknown"),as_factor))
+              "GenSpec","Group","LF","GF","Fam","Biomes","Status","Range",
+              "Habitat_degradation","Habitat_loss", "IAS","Other",
+              "Over_exploitation","Pollution","Unknown"),as_factor))
 EncDF <- EncDF %>% 
-            mutate_at(c("GenSpec","Group","LF","GF","Fam","Biomes","Status","Range","Habitat_degradation","Habitat_loss", "IAS","Other","Over_exploitation","Pollution","Unknown"),as.numeric)
+            mutate_at(c("GenSpec","Group","LF","GF","Fam","Biomes",
+                        "Status","Range","Habitat_degradation","Habitat_loss", 
+                        "IAS","Other","Over_exploitation","Pollution","Unknown")
+                      ,as.numeric)
+EncDF <- EncDF %>% mutate(across(c("LF","Fam","IAS","Other","Over_exploitation",
+                                   "Pollution","Unknown"),function (x) x-1))
 
-#kable(head(EncDF, 10))
 encode_data <- read_csv("process.csv")
 kable(head(encode_data, 10))
 ```
@@ -933,11 +941,13 @@ class_counts <- table(data_train$label)
 
 data_train_AB <- data_train
 data_train_AB <- data_train_AB[data_train_AB$label != '3',]
-data_train_AB_resampled <- ovun.sample(label ~ ., data = data_train_AB, method = "over", N = 980, seed = 1)$data
+data_train_AB_resampled <- ovun.sample(label ~ ., data = data_train_AB, 
+                                       method = "over", N = 980, seed = 1)$data
 
 data_train_AC <- data_train
 data_train_AC <- data_train_AC[data_train_AC$label != '2',]
-data_train_AC_resampled <- ovun.sample(label ~ ., data = data_train_AC, method = "over", N = 980, seed = 1)$data
+data_train_AC_resampled <- ovun.sample(label ~ ., data = data_train_AC, 
+                                       method = "over", N = 980, seed = 1)$data
 
 data_train_AB_2 <- data_train_AB_resampled[data_train_AB_resampled$label == '2',]
 data_train_AC_3 <- data_train_AC_resampled[data_train_AC_resampled$label == '3',]
@@ -968,8 +978,6 @@ label <- data_train_combined[, 15]
 ```
 
 ```{r}
-
-
 trainMM <- as.data.frame(lapply(features_train, 
                       function(x) {(x-min(x))/(max(x)-min(x))}))
 testMM <- as.data.frame(lapply(features_test, 
@@ -1039,8 +1047,6 @@ L2Counts <- table(L2Model$label)
 #### MinMax Model
 
 ```{r}
-
-
 MM <- randomForest(x = MMModel[-ncol(data_train_combined)],
                         y = as.factor(MMModel$label), ntree = 6)
 importanceMM = importance(MM)
@@ -1069,7 +1075,6 @@ print(printTable)
 #### ZScore Model
 
 ```{r}
-
 ZS <- randomForest(x = ZSModel[-ncol(data_train_combined)],
                       y = as.factor(ZSModel$label), ntree = 6)
 ImportanceZS = importance(ZS)
@@ -1097,7 +1102,6 @@ print(printTable)
 #### Max Absolute Value Model
 
 ```{r}
-
 MAV <- randomForest(x = MAVModel[-ncol(data_train_combined)], 
                         y = as.factor(MAVModel$label), 
                         ntree = 6)
@@ -1125,7 +1129,6 @@ print(printTable)
 #### L1 Normalization Model
 
 ```{r}
-
 L1 <- randomForest(x = L1Model[-ncol(data_train_combined)], 
                         y = as.factor(L1Model$label), ntree = 6)
 L1Importance = importance(L1)
@@ -1152,7 +1155,6 @@ print(printTable)
 ##### L2 Normalization Model
 
 ```{r}
-
 L2 <- randomForest(x = L2Model[-ncol(data_train_combined)], 
                         y = as.factor(L2Model$label), ntree = 6)
 L2Importance = importance(L2)
@@ -1214,21 +1216,15 @@ label_test_factor<-as.factor(label_test)
 cm_vote <-confusionMatrix(final_pred_factor,
                           label_test_factor)
 rownames(cm_vote$byClass)<-c("NotThr","Thr","Ext")
-sensitivity_class1<-cm_vote$byClass[
-                    "NotThr", "Sensitivity"]
-sensitivity_class2<-cm_vote$byClass[
-                    "Thr", "Sensitivity"]
-sensitivity_class3<-cm_vote$byClass[
-                    "Ext",  "Sensitivity"]
+sensitivity_class1<-cm_vote$byClass["NotThr", "Sensitivity"]
+sensitivity_class2<-cm_vote$byClass["Thr", "Sensitivity"]
+sensitivity_class3<-cm_vote$byClass["Ext",  "Sensitivity"]
 recall =(sensitivity_class1+sensitivity_class2+
            sensitivity_class3)/3
 
-precision_class1<-cm_vote$byClass[
-                  "NotThr",  "Pos Pred Value"]
-precision_class2<-cm_vote$byClass[
-                  "Thr",  "Pos Pred Value"]
-precision_class3<-cm_vote$byClass[
-                  "Ext", "Pos Pred Value"]
+precision_class1<-cm_vote$byClass["NotThr",  "Pos Pred Value"]
+precision_class2<-cm_vote$byClass["Thr",  "Pos Pred Value"]
+precision_class3<-cm_vote$byClass["Ext", "Pos Pred Value"]
 precision=(precision_class1+precision_class2+
              precision_class3)/3
 
@@ -1240,8 +1236,7 @@ printTable=matrix(c(round(accuracy,2),
                     round(F1,2)),ncol=1,
                     byrow=TRUE)
 colnames(printTable)=c('Score')
-rownames(printTable)=c('Accuracy','Recall',
-                       'Precision','F1')
+rownames(printTable)=c('Accuracy','Recall','Precision','F1')
 print(printTable)
 
 ```

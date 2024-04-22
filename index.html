@@ -3885,16 +3885,24 @@ Place these five prediction results into a set <span class="math inline">\(Y = \
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">&quot;All_threat_data.csv&quot;</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(GenSpec,LF,GF,Fam,Biomes,Status,Range,Habitat_degradation,Habitat_loss,IAS,Other,Over_exploitation,Pollution,Unknown,Group)</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> EncDF <span class="sc">%&gt;%</span> </span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;GenSpec&quot;</span>,<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;LF&quot;</span>,<span class="st">&quot;GF&quot;</span>,<span class="st">&quot;Fam&quot;</span>,<span class="st">&quot;Biomes&quot;</span>,<span class="st">&quot;Status&quot;</span>,<span class="st">&quot;Range&quot;</span>,<span class="st">&quot;Habitat_degradation&quot;</span>,<span class="st">&quot;Habitat_loss&quot;</span>, <span class="st">&quot;IAS&quot;</span>,<span class="st">&quot;Other&quot;</span>,<span class="st">&quot;Over_exploitation&quot;</span>,<span class="st">&quot;Pollution&quot;</span>,<span class="st">&quot;Unknown&quot;</span>),as_factor))</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> EncDF <span class="sc">%&gt;%</span> </span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate_at</span>(<span class="fu">c</span>(<span class="st">&quot;GenSpec&quot;</span>,<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;LF&quot;</span>,<span class="st">&quot;GF&quot;</span>,<span class="st">&quot;Fam&quot;</span>,<span class="st">&quot;Biomes&quot;</span>,<span class="st">&quot;Status&quot;</span>,<span class="st">&quot;Range&quot;</span>,<span class="st">&quot;Habitat_degradation&quot;</span>,<span class="st">&quot;Habitat_loss&quot;</span>, <span class="st">&quot;IAS&quot;</span>,<span class="st">&quot;Other&quot;</span>,<span class="st">&quot;Over_exploitation&quot;</span>,<span class="st">&quot;Pollution&quot;</span>,<span class="st">&quot;Unknown&quot;</span>),as.numeric)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co">#kable(head(EncDF, 10))</span></span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>encode_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;process.csv&quot;</span>)</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(encode_data, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> data <span class="sc">%&gt;%</span> <span class="fu">select</span>(GenSpec,LF,GF,Fam,Biomes,Status,Range,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                         Habitat_degradation,Habitat_loss,IAS,Other,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>                         Over_exploitation,Pollution,Unknown,Group)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> EncDF <span class="sc">%&gt;%</span> </span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;GenSpec&quot;</span>,<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;LF&quot;</span>,<span class="st">&quot;GF&quot;</span>,<span class="st">&quot;Fam&quot;</span>,<span class="st">&quot;Biomes&quot;</span>,<span class="st">&quot;Status&quot;</span>,<span class="st">&quot;Range&quot;</span>,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;Habitat_degradation&quot;</span>,<span class="st">&quot;Habitat_loss&quot;</span>, <span class="st">&quot;IAS&quot;</span>,<span class="st">&quot;Other&quot;</span>,</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>              <span class="st">&quot;Over_exploitation&quot;</span>,<span class="st">&quot;Pollution&quot;</span>,<span class="st">&quot;Unknown&quot;</span>),as_factor))</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> EncDF <span class="sc">%&gt;%</span> </span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>            <span class="fu">mutate_at</span>(<span class="fu">c</span>(<span class="st">&quot;GenSpec&quot;</span>,<span class="st">&quot;Group&quot;</span>,<span class="st">&quot;LF&quot;</span>,<span class="st">&quot;GF&quot;</span>,<span class="st">&quot;Fam&quot;</span>,<span class="st">&quot;Biomes&quot;</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;Status&quot;</span>,<span class="st">&quot;Range&quot;</span>,<span class="st">&quot;Habitat_degradation&quot;</span>,<span class="st">&quot;Habitat_loss&quot;</span>, </span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>                        <span class="st">&quot;IAS&quot;</span>,<span class="st">&quot;Other&quot;</span>,<span class="st">&quot;Over_exploitation&quot;</span>,<span class="st">&quot;Pollution&quot;</span>,<span class="st">&quot;Unknown&quot;</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>                      ,as.numeric)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>EncDF <span class="ot">&lt;-</span> EncDF <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">c</span>(<span class="st">&quot;LF&quot;</span>,<span class="st">&quot;Fam&quot;</span>,<span class="st">&quot;IAS&quot;</span>,<span class="st">&quot;Other&quot;</span>,<span class="st">&quot;Over_exploitation&quot;</span>,</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">&quot;Pollution&quot;</span>,<span class="st">&quot;Unknown&quot;</span>),<span class="cf">function</span> (x) x<span class="dv">-1</span>))</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>encode_data <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;process.csv&quot;</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">kable</span>(<span class="fu">head</span>(encode_data, <span class="dv">10</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <table class="table table-sm table-striped small">
@@ -4161,23 +4169,25 @@ Place these five prediction results into a set <span class="math inline">\(Y = \
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>data_train_AB <span class="ot">&lt;-</span> data_train</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>data_train_AB <span class="ot">&lt;-</span> data_train_AB[data_train_AB<span class="sc">$</span>label <span class="sc">!=</span> <span class="st">&#39;3&#39;</span>,]</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>data_train_AB_resampled <span class="ot">&lt;-</span> <span class="fu">ovun.sample</span>(label <span class="sc">~</span> ., <span class="at">data =</span> data_train_AB, <span class="at">method =</span> <span class="st">&quot;over&quot;</span>, <span class="at">N =</span> <span class="dv">980</span>, <span class="at">seed =</span> <span class="dv">1</span>)<span class="sc">$</span>data</span>
-<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>data_train_AC <span class="ot">&lt;-</span> data_train</span>
-<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>data_train_AC <span class="ot">&lt;-</span> data_train_AC[data_train_AC<span class="sc">$</span>label <span class="sc">!=</span> <span class="st">&#39;2&#39;</span>,]</span>
-<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>data_train_AC_resampled <span class="ot">&lt;-</span> <span class="fu">ovun.sample</span>(label <span class="sc">~</span> ., <span class="at">data =</span> data_train_AC, <span class="at">method =</span> <span class="st">&quot;over&quot;</span>, <span class="at">N =</span> <span class="dv">980</span>, <span class="at">seed =</span> <span class="dv">1</span>)<span class="sc">$</span>data</span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>data_train_AB_2 <span class="ot">&lt;-</span> data_train_AB_resampled[data_train_AB_resampled<span class="sc">$</span>label <span class="sc">==</span> <span class="st">&#39;2&#39;</span>,]</span>
-<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>data_train_AC_3 <span class="ot">&lt;-</span> data_train_AC_resampled[data_train_AC_resampled<span class="sc">$</span>label <span class="sc">==</span> <span class="st">&#39;3&#39;</span>,]</span>
-<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>data_train_1 <span class="ot">&lt;-</span> data_train_AB_resampled[data_train_AB_resampled<span class="sc">$</span>label <span class="sc">==</span> <span class="st">&#39;1&#39;</span>,]</span>
-<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>data_train_combined <span class="ot">&lt;-</span> <span class="fu">rbind</span>(data_train_1, data_train_AB_2, data_train_AC_3)</span>
-<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Group Counts Pre-Balancing:  &quot;</span>, </span>
-<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(data_train<span class="sc">$</span>label),</span>
-<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;</span><span class="sc">\n</span><span class="st">Group Counts Post-Balancing: &quot;</span>, </span>
-<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(data_train_combined<span class="sc">$</span>label))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>data_train_AB_resampled <span class="ot">&lt;-</span> <span class="fu">ovun.sample</span>(label <span class="sc">~</span> ., <span class="at">data =</span> data_train_AB, </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">method =</span> <span class="st">&quot;over&quot;</span>, <span class="at">N =</span> <span class="dv">980</span>, <span class="at">seed =</span> <span class="dv">1</span>)<span class="sc">$</span>data</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>data_train_AC <span class="ot">&lt;-</span> data_train</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>data_train_AC <span class="ot">&lt;-</span> data_train_AC[data_train_AC<span class="sc">$</span>label <span class="sc">!=</span> <span class="st">&#39;2&#39;</span>,]</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>data_train_AC_resampled <span class="ot">&lt;-</span> <span class="fu">ovun.sample</span>(label <span class="sc">~</span> ., <span class="at">data =</span> data_train_AC, </span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>                                       <span class="at">method =</span> <span class="st">&quot;over&quot;</span>, <span class="at">N =</span> <span class="dv">980</span>, <span class="at">seed =</span> <span class="dv">1</span>)<span class="sc">$</span>data</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>data_train_AB_2 <span class="ot">&lt;-</span> data_train_AB_resampled[data_train_AB_resampled<span class="sc">$</span>label <span class="sc">==</span> <span class="st">&#39;2&#39;</span>,]</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>data_train_AC_3 <span class="ot">&lt;-</span> data_train_AC_resampled[data_train_AC_resampled<span class="sc">$</span>label <span class="sc">==</span> <span class="st">&#39;3&#39;</span>,]</span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>data_train_1 <span class="ot">&lt;-</span> data_train_AB_resampled[data_train_AB_resampled<span class="sc">$</span>label <span class="sc">==</span> <span class="st">&#39;1&#39;</span>,]</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>data_train_combined <span class="ot">&lt;-</span> <span class="fu">rbind</span>(data_train_1, data_train_AB_2, data_train_AC_3)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Group Counts Pre-Balancing:  &quot;</span>, </span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(data_train<span class="sc">$</span>label),</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">&quot;</span><span class="sc">\n</span><span class="st">Group Counts Post-Balancing: &quot;</span>, </span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">table</span>(data_train_combined<span class="sc">$</span>label))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>Group Counts Pre-Balancing:   490 148 23 
@@ -4501,35 +4511,28 @@ F1         0.40</code></pre>
 <span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>cm_vote <span class="ot">&lt;-</span><span class="fu">confusionMatrix</span>(final_pred_factor,</span>
 <span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>                          label_test_factor)</span>
 <span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(cm_vote<span class="sc">$</span>byClass)<span class="ot">&lt;-</span><span class="fu">c</span>(<span class="st">&quot;NotThr&quot;</span>,<span class="st">&quot;Thr&quot;</span>,<span class="st">&quot;Ext&quot;</span>)</span>
-<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>sensitivity_class1<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[</span>
-<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;NotThr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]</span>
-<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>sensitivity_class2<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[</span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;Thr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]</span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>sensitivity_class3<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[</span>
-<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>                    <span class="st">&quot;Ext&quot;</span>,  <span class="st">&quot;Sensitivity&quot;</span>]</span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">=</span>(sensitivity_class1<span class="sc">+</span>sensitivity_class2<span class="sc">+</span></span>
-<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>           sensitivity_class3)<span class="sc">/</span><span class="dv">3</span></span>
-<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>precision_class1<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[</span>
-<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;NotThr&quot;</span>,  <span class="st">&quot;Pos Pred Value&quot;</span>]</span>
-<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a>precision_class2<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[</span>
-<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;Thr&quot;</span>,  <span class="st">&quot;Pos Pred Value&quot;</span>]</span>
-<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>precision_class3<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[</span>
-<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>                  <span class="st">&quot;Ext&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]</span>
-<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>precision<span class="ot">=</span>(precision_class1<span class="sc">+</span>precision_class2<span class="sc">+</span></span>
-<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>             precision_class3)<span class="sc">/</span><span class="dv">3</span></span>
-<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>F1<span class="ot">=</span><span class="dv">2</span><span class="sc">*</span>recall<span class="sc">*</span>precision<span class="sc">/</span>(recall<span class="sc">+</span>precision)</span>
-<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),</span>
-<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
-<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),</span>
-<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(F1,<span class="dv">2</span>)),<span class="at">ncol=</span><span class="dv">1</span>,</span>
-<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a>                    <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
-<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
-<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,</span>
-<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
-<span id="cb25-46"><a href="#cb25-46" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a>sensitivity_class1<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[<span class="st">&quot;NotThr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]</span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>sensitivity_class2<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[<span class="st">&quot;Thr&quot;</span>, <span class="st">&quot;Sensitivity&quot;</span>]</span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a>sensitivity_class3<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[<span class="st">&quot;Ext&quot;</span>,  <span class="st">&quot;Sensitivity&quot;</span>]</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a>recall <span class="ot">=</span>(sensitivity_class1<span class="sc">+</span>sensitivity_class2<span class="sc">+</span></span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>           sensitivity_class3)<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>precision_class1<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[<span class="st">&quot;NotThr&quot;</span>,  <span class="st">&quot;Pos Pred Value&quot;</span>]</span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a>precision_class2<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[<span class="st">&quot;Thr&quot;</span>,  <span class="st">&quot;Pos Pred Value&quot;</span>]</span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a>precision_class3<span class="ot">&lt;-</span>cm_vote<span class="sc">$</span>byClass[<span class="st">&quot;Ext&quot;</span>, <span class="st">&quot;Pos Pred Value&quot;</span>]</span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a>precision<span class="ot">=</span>(precision_class1<span class="sc">+</span>precision_class2<span class="sc">+</span></span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>             precision_class3)<span class="sc">/</span><span class="dv">3</span></span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>F1<span class="ot">=</span><span class="dv">2</span><span class="sc">*</span>recall<span class="sc">*</span>precision<span class="sc">/</span>(recall<span class="sc">+</span>precision)</span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a>printTable<span class="ot">=</span><span class="fu">matrix</span>(<span class="fu">c</span>(<span class="fu">round</span>(accuracy,<span class="dv">2</span>),</span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(recall,<span class="dv">2</span>),</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(precision,<span class="dv">2</span>),</span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a>                    <span class="fu">round</span>(F1,<span class="dv">2</span>)),<span class="at">ncol=</span><span class="dv">1</span>,</span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a>                    <span class="at">byrow=</span><span class="cn">TRUE</span>)</span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Score&#39;</span>)</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a><span class="fu">rownames</span>(printTable)<span class="ot">=</span><span class="fu">c</span>(<span class="st">&#39;Accuracy&#39;</span>,<span class="st">&#39;Recall&#39;</span>,<span class="st">&#39;Precision&#39;</span>,<span class="st">&#39;F1&#39;</span>)</span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(printTable)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>          Score
