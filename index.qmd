@@ -968,51 +968,36 @@ label <- data_train_combined[, 15]
 ```
 
 ```{r}
-
-features_train <- as.data.frame(lapply(features_train, function(x) {(x-min(x))/(max(x)-min(x))}))
-features_test <- as.data.frame(lapply(features_test, function(x) {(x-min(x))/(max(x)-min(x))}))
+features_train <- as.data.frame(lapply(features_train, 
+                                       function(x) {(x-min(x))/(max(x)-min(x))}))
+features_test <- as.data.frame(lapply(features_test, 
+                                      function(x) {(x-min(x))/(max(x)-min(x))}))
 
 trainMM <- as.data.frame(lapply(features_train, 
                       function(x) {(x-min(x))/(max(x)-min(x))}))
 testMM <- as.data.frame(lapply(features_test, 
                       function(x) {(x-min(x))/(max(x)-min(x))}))
 
-features_train_1 <- as.data.frame(lapply(features_train, function(x) {(x-min(x))/(max(x)-min(x))}))
-features_test_1 <- as.data.frame(lapply(features_test, function(x) {(x-min(x))/(max(x)-min(x))}))
-
 TrainZS <- as.data.frame(lapply(features_train, 
                       function(x) {(x - mean(x))/sd(x)}))
 TestZS <- as.data.frame(lapply(features_test, 
                       function(x) {(x - mean(x))/sd(x)}))
-
-
-features_train_2 <- as.data.frame(lapply(features_train, function(x) {(x - mean(x))/sd(x)}))
-features_test_2 <- as.data.frame(lapply(features_test, function(x) {(x - mean(x))/sd(x)}))
 
 TrainMAV <- as.data.frame(lapply(features_train, 
                        function(x) {x / max(abs(x))}))
 TestMAV <- as.data.frame(lapply(features_test, 
                         function(x) {x / max(abs(x))}))
 
-features_train_3 <- as.data.frame(lapply(features_train, function(x) {x / max(abs(x))}))
-features_test_3 <- as.data.frame(lapply(features_test, function(x) {x / max(abs(x))}))
-
 trainL1 <- as.data.frame(lapply(features_train, 
                        function(x) {x / sum(abs(x))}))
 TestL1 <- as.data.frame(lapply(features_test, 
                        function(x) {x / sum(abs(x))}))
-
-
-features_train_4 <- as.data.frame(lapply(features_train, function(x) {x / sum(abs(x))}))
-features_test_4 <- as.data.frame(lapply(features_test, function(x) {x / sum(abs(x))}))
 
 TrainL2 <- as.data.frame(lapply(features_train, 
                        function(x) {x / sqrt(sum(x^2))}))
 TestL2 <- as.data.frame(lapply(features_test, 
                        function(x) {x / sqrt(sum(x^2))}))
 
-features_train_5 <- as.data.frame(lapply(features_train, function(x) {x / sqrt(sum(x^2))}))
-features_test_5 <- as.data.frame(lapply(features_test, function(x) {x / sqrt(sum(x^2))}))
 ```
 
 #### Training dataset
@@ -1024,49 +1009,25 @@ features_test_5 <- as.data.frame(lapply(features_test, function(x) {x / sqrt(sum
 5.  Training dataset after L2 norm normalization
 
 ```{r}
-data_train <- features_train
-data_train$label <- label
-class_counts <- table(data_train$label)
+MMModel <- trainMM
+MMModel$label <- label
+MMCounts <- table(MMModel$label)
 
-train <- trainMM
-train$label <- label
-MMCounts <- table(train$label)
+ZSModel <- TrainZS
+ZSModel$label <- label
+ZSCounts <- table(ZSModel$label)
 
-data_train_1 <- features_train_1
-data_train_1$label <- label
-class_counts_1 <- table(data_train_1$label)
+MAVModel <- TrainMAV
+MAVModel$label <- label
+MAVCounts <- table(MAVModel$label)
 
-train <- TrainZS
-train$label <- label
-ZSCounts <- table(train$label)
+L1Model <- trainL1
+L1Model$label <- label
+L1Counts <- table(L1Model$label)
 
-data_train_2 <- features_train_2
-data_train_2$label <- label
-class_counts_2 <- table(data_train_2$label)
-
-train <- TrainMAV
-train$label <- label
-MAVCounts <- table(train$label)
-
-data_train_3 <- features_train_3
-data_train_3$label <- label
-class_counts_3 <- table(data_train_3$label)
-
-train <- trainL1
-train$label <- label
-L1Counts <- table(train$label)
-
-data_train_4 <- features_train_4
-data_train_4$label <- label
-class_counts_4 <- table(data_train_4$label)
-
-train <- TrainL2
-train$label <- label
-L2Counts <- table(train$label)
-
-data_train_5 <- features_train_5
-data_train_5$label <- label
-class_counts_5 <- table(data_train_5$label)
+L2Model <- TrainL2
+L2Model$label <- label
+L2Counts <- table(L2Model$label)
 ```
 
 #### Training Steps for Each Model
@@ -1081,18 +1042,16 @@ class_counts_5 <- table(data_train_5$label)
 #### MinMax Model
 
 ```{r}
-train <- trainMM
-train$label <- label
-MMCounts <- table(train$label)
 
-MM <- randomForest(x = train[-ncol(data_train_combined)],
-                        y = as.factor(train$label), ntree = 4)
+
+MM <- randomForest(x = MMModel[-ncol(data_train_combined)],
+                        y = as.factor(MMModel$label), ntree = 4)
 importanceMM = importance(MM)
 PredMM <- predict(MM, testMM)
 accuracy <- sum(label_test == PredMM) / length(label_test)
-testfactorMM <- as.factor(label_test)
+TestFactorMM <- as.factor(label_test)
 PredFactorMM <- as.factor(PredMM)
-cm <- confusionMatrix(PredFactorMM, testfactorMM)
+cm <- confusionMatrix(PredFactorMM, TestFactorMM)
 rownames(cm$byClass)<-c("NotThr","Thr","Ext")
 recall <- mean(c(cm$byClass["NotThr", "Sensitivity"], 
                  cm$byClass["Thr", "Sensitivity"], 
@@ -1113,18 +1072,15 @@ print(printTable)
 #### ZScore Model
 
 ```{r}
-train <- TrainZS
-train$label <- label
-ZSCounts <- table(train$label)
 
-ZS <- randomForest(x = train[-ncol(data_train_combined)],
-                      y = as.factor(train$label), ntree = 4)
+ZS <- randomForest(x = ZSModel[-ncol(data_train_combined)],
+                      y = as.factor(ZSModel$label), ntree = 4)
 ImportanceZS = importance(ZS)
 PredZS <- predict(ZS, TestZS)
 accuracy <- sum(label_test == PredZS) / length(label_test)
-label_test_factor <- as.factor(label_test)
+TestFactorZS <- as.factor(label_test)
 PredFactorZS <- as.factor(PredZS)
-cm <- confusionMatrix(PredFactorZS, label_test_factor)
+cm <- confusionMatrix(PredFactorZS, TestFactorZS)
 recall <- mean(c(cm$byClass["Class: 1", "Sensitivity"],
                               cm$byClass["Class: 2", "Sensitivity"],
                               cm$byClass["Class: 3", "Sensitivity"]),na.rm=TRUE)
@@ -1144,19 +1100,16 @@ print(printTable)
 #### Max Absolute Value Model
 
 ```{r}
-train <- TrainMAV
-train$label <- label
-MAVCounts <- table(train$label)
 
-MAV <- randomForest(x = train[-ncol(data_train_combined)], 
-                        y = as.factor(train$label), 
+MAV <- randomForest(x = MAVModel[-ncol(data_train_combined)], 
+                        y = as.factor(MAVModel$label), 
                         ntree = 4)
 ImportanceMAV = importance(MAV)
 PredMAV <- predict(MAV, TestMAV)
 accuracy <- sum(label_test == PredMAV) / length(label_test)
-label_test_factor <- as.factor(label_test)
+TestFactorMAV <- as.factor(label_test)
 PredFactorMAV <- as.factor(PredMAV)
-cm <- confusionMatrix(PredFactorMAV, label_test_factor)
+cm <- confusionMatrix(PredFactorMAV, TestFactorMAV)
 recall <- mean(c(cm$byClass["Class: 1", "Sensitivity"],
                  cm$byClass["Class: 2", "Sensitivity"],
                  cm$byClass["Class: 3", "Sensitivity"]),na.rm=TRUE)
@@ -1176,18 +1129,14 @@ print(printTable)
 
 ```{r}
 
-train <- trainL1
-train$label <- label
-L1Counts <- table(train$label)
-
-L1 <- randomForest(x = train[-ncol(data_train_combined)], 
-                        y = as.factor(train$label), ntree = 4)
+L1 <- randomForest(x = L1Model[-ncol(data_train_combined)], 
+                        y = as.factor(L1Model$label), ntree = 4)
 L1Importance = importance(L1)
 PredL1 <- predict(L1, TestL1)
 accuracy <- sum(label_test == PredL1) / length(label_test)
-label_test_factor <- as.factor(label_test)
+TestFactorL1 <- as.factor(label_test)
 PredFactorL1 <- as.factor(PredL1)
-cm <- confusionMatrix(PredFactorL1, label_test_factor)
+cm <- confusionMatrix(PredFactorL1, TestFactorL1)
 recall <- mean(c(cm$byClass["Class: 1", "Sensitivity"],
                               cm$byClass["Class: 2", "Sensitivity"],
                               cm$byClass["Class: 3", "Sensitivity"]),na.rm=TRUE)
@@ -1206,18 +1155,15 @@ print(printTable)
 ##### L2 Normalization Model
 
 ```{r}
-train <- TrainL2
-train$label <- label
-L2Counts <- table(train$label)
 
-L2 <- randomForest(x = train[-ncol(data_train_combined)], 
-                        y = as.factor(train$label), ntree = 4)
+L2 <- randomForest(x = L2Model[-ncol(data_train_combined)], 
+                        y = as.factor(L2Model$label), ntree = 4)
 L2Importance = importance(L2)
 PredL2 <- predict(L2, TestL2)
 accuracy <- sum(label_test == PredL2) / length(label_test)
-label_test_factor <- as.factor(label_test)
+TestFactorL2 <- as.factor(label_test)
 PredFactorL2 <- as.factor(PredL2)
-cm <- confusionMatrix(PredFactorL2, label_test_factor)
+cm <- confusionMatrix(PredFactorL2, TestFactorL2)
 
 recall <- mean(c(cm$byClass["Class: 1", "Sensitivity"],
                  cm$byClass["Class: 2", "Sensitivity"],
