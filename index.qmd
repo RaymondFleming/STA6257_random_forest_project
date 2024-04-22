@@ -968,10 +968,7 @@ label <- data_train_combined[, 15]
 ```
 
 ```{r}
-features_train <- as.data.frame(lapply(features_train, 
-                                       function(x) {(x-min(x))/(max(x)-min(x))}))
-features_test <- as.data.frame(lapply(features_test, 
-                                      function(x) {(x-min(x))/(max(x)-min(x))}))
+
 
 trainMM <- as.data.frame(lapply(features_train, 
                       function(x) {(x-min(x))/(max(x)-min(x))}))
@@ -1045,7 +1042,7 @@ L2Counts <- table(L2Model$label)
 
 
 MM <- randomForest(x = MMModel[-ncol(data_train_combined)],
-                        y = as.factor(MMModel$label), ntree = 4)
+                        y = as.factor(MMModel$label), ntree = 6)
 importanceMM = importance(MM)
 PredMM <- predict(MM, testMM)
 accuracy <- sum(label_test == PredMM) / length(label_test)
@@ -1074,7 +1071,7 @@ print(printTable)
 ```{r}
 
 ZS <- randomForest(x = ZSModel[-ncol(data_train_combined)],
-                      y = as.factor(ZSModel$label), ntree = 4)
+                      y = as.factor(ZSModel$label), ntree = 6)
 ImportanceZS = importance(ZS)
 PredZS <- predict(ZS, TestZS)
 accuracy <- sum(label_test == PredZS) / length(label_test)
@@ -1103,7 +1100,7 @@ print(printTable)
 
 MAV <- randomForest(x = MAVModel[-ncol(data_train_combined)], 
                         y = as.factor(MAVModel$label), 
-                        ntree = 4)
+                        ntree = 6)
 ImportanceMAV = importance(MAV)
 PredMAV <- predict(MAV, TestMAV)
 accuracy <- sum(label_test == PredMAV) / length(label_test)
@@ -1130,7 +1127,7 @@ print(printTable)
 ```{r}
 
 L1 <- randomForest(x = L1Model[-ncol(data_train_combined)], 
-                        y = as.factor(L1Model$label), ntree = 4)
+                        y = as.factor(L1Model$label), ntree = 6)
 L1Importance = importance(L1)
 PredL1 <- predict(L1, TestL1)
 accuracy <- sum(label_test == PredL1) / length(label_test)
@@ -1157,7 +1154,7 @@ print(printTable)
 ```{r}
 
 L2 <- randomForest(x = L2Model[-ncol(data_train_combined)], 
-                        y = as.factor(L2Model$label), ntree = 4)
+                        y = as.factor(L2Model$label), ntree = 6)
 L2Importance = importance(L2)
 PredL2 <- predict(L2, TestL2)
 accuracy <- sum(label_test == PredL2) / length(label_test)
@@ -1200,7 +1197,6 @@ print(printTable)
 11. Calculate the precision for each category
 
 ```{r}
-
 n <- length(PredMM)
 final_pred <-rep(NA, n)
 for(i in 1:n) {
